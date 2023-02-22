@@ -17,14 +17,14 @@ function App() {
   };
 
   const completeCheck = (e) => {
-    todoDB.filter((data) =>
-      data.id == e.target.parentElement.id
-        ? data.isCompleted
-          ? (data.isCompleted = false)
-          : (data.isCompleted = true)
-        : null
+    setTodoDB(
+      todoDB.map((todoData) => {
+        if (todoData.id == e.target.parentElement.id) {
+          return { ...todoData, isCompleted: !todoData.isCompleted };
+        }
+        return todoData;
+      })
     );
-    console.log(todoDB);
   };
 
   const deleteTodo = (e) => {
@@ -45,7 +45,7 @@ function App() {
       </form>
       <ul>
         {todoDB.map((todoData) => (
-          <li id={todoData.id} data-iscompleted={todoData.isCompleted}>
+          <li key={todoData.id} id={todoData.id}>
             <button onClick={completeCheck}>
               {!todoData.isCompleted ? `🤔` : `😍`}
             </button>
