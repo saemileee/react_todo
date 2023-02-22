@@ -3,6 +3,15 @@ import { useState } from "react";
 function App() {
   const [todoDB, setTodoDB] = useState([]);
   const [inputValue, setInputValue] = useState();
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const selectTag = (e) => {
+    setSelectedTags([
+      ...selectedTags,
+      { id: e.target.id, value: e.target.value },
+    ]);
+  };
+
   const writeTodoText = (e) => {
     setInputValue(e.target.value);
   };
@@ -11,9 +20,15 @@ function App() {
     const newID = new Date().getTime();
     setTodoDB([
       ...todoDB,
-      { id: newID, content: inputValue, isCompleted: false },
+      {
+        id: newID,
+        content: inputValue,
+        isCompleted: false,
+        tags: selectedTags,
+      },
     ]);
     setInputValue("");
+    setSelectedTags([]);
   };
 
   const completeCheck = (e) => {
@@ -35,14 +50,32 @@ function App() {
     <div>
       <h1>ToDo List</h1>
       <form onSubmit={addNewTodo}>
+        <select onChange={selectTag}>
+          <option>tags</option>
+          <option id="0" value="과제">
+            과제
+          </option>
+          <option id="1" value="약속">
+            약속
+          </option>
+          <option id="2" value="코딩">
+            코딩
+          </option>
+        </select>
         <input
           onChange={writeTodoText}
           value={inputValue}
+          required
           type="text"
           placeholder="할 일을 입력해 주세요."
         />
         <button>추가</button>
       </form>
+      <ul>
+        {selectedTags.map((tag) => (
+          <span>#{tag.value} </span>
+        ))}
+      </ul>
       <ul>
         {todoDB.map((todoData) => (
           <li key={todoData.id} id={todoData.id}>
@@ -51,6 +84,11 @@ function App() {
             </button>
             {todoData.content}
             <button onClick={deleteTodo}>X</button>
+            <div>
+              {todoData.tags.map((tag) => (
+                <span>{tag.value}</span>
+              ))}
+            </div>
           </li>
         ))}
       </ul>
