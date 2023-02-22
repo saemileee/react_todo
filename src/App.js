@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function App() {
-  const [todoDB, setToddDB] = useState([]);
+  const [todoDB, setTodoDB] = useState([]);
   const [inputValue, setInputValue] = useState();
   const writeTodoText = (e) => {
     setInputValue(e.target.value);
@@ -9,12 +9,13 @@ function App() {
   const addNewTodo = (e) => {
     e.preventDefault();
     const newID = new Date().getTime();
-    setToddDB([
+    setTodoDB([
       ...todoDB,
       { id: newID, content: inputValue, isCompleted: false },
     ]);
     setInputValue("");
   };
+
   const completeCheck = (e) => {
     todoDB.filter((data) =>
       data.id == e.target.parentElement.id
@@ -24,6 +25,10 @@ function App() {
         : null
     );
     console.log(todoDB);
+  };
+
+  const deleteTodo = (e) => {
+    setTodoDB(todoDB.filter((data) => e.target.parentElement.id != data.id));
   };
 
   return (
@@ -45,7 +50,7 @@ function App() {
               {!todoData.isCompleted ? `🤔` : `😍`}
             </button>
             {todoData.content}
-            <button>X</button>
+            <button onClick={deleteTodo}>X</button>
           </li>
         ))}
       </ul>
