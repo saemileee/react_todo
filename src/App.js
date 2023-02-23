@@ -1,4 +1,15 @@
 import { useState } from "react";
+import {
+  Button,
+  ListGroup,
+  ListGroupItem,
+  Form,
+  InputGroup,
+  Badge,
+} from "react-bootstrap";
+
+import "./reset.css";
+import "./App.css";
 
 function App() {
   const [todoDB, setTodoDB] = useState([]);
@@ -9,14 +20,7 @@ function App() {
   const [tagInputValue, setTagInputValue] = useState();
   const [tagListStatus, setTagListStatus] = useState(false);
   const [tagCreateBtn, setTagCreateBtn] = useState(false);
-
-  const showTagCreateBtn = () => {
-    if (savedTagList.filter((tag) => tag.value == tagInputValue).length == 0) {
-      setTagCreateBtn(true);
-    } else {
-      setTagCreateBtn(false);
-    }
-  };
+  const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
   const showTagList = () => {
     setTagListStatus((current) => !current);
@@ -24,10 +28,16 @@ function App() {
 
   const writeTagText = (e) => {
     setTagInputValue(e.target.value);
-    showTagCreateBtn();
-  };
+    if (savedTagList.filter((tag) => tag.value == e.target.value).length == 0) {
+      setTagCreateBtn(true);
+    } else {
+      setTagCreateBtn(false);
+    }
 
-  //있는 태그를 검색해서 선택하는 경우 = 2번,
+    setTagsFilteredList(
+      [...savedTagList].filter((tag) => tag.value.includes(e.target.value))
+    );
+  };
 
   //새 태그를 크리에이트하는 경우 = 1번의 경우
   const createNewTag = (e) => {
@@ -52,6 +62,7 @@ function App() {
     }
 
     setTagInputValue("");
+    setTagCreateBtn(false);
 
     // 저장된 value 값이 이미 저장된 taglist의 value 값하고 같은 경우 찾았따!
     //1. 작성한 태그가 selectedTag, savedTagList에 없는 경우
@@ -69,19 +80,6 @@ function App() {
     }
     //저장된 태그리스트에서 태그를 눌렀을 때 아이디가 같은 것을 셀렉티드로 추가
     // + 중복되는 리스트는 추가 안되게 수정해야함
-  };
-
-  const updateTagList = () => {
-    // let newTags = [];
-    // for (let i = 0; i < savedTagList.length; i++) {
-    //   for (let j = 0; j < selectedTags.length; i++) {
-    //     if (savedTagList[i] !== selectedTags[j]) {
-    //       newTags.push(selectedTags[j]);
-    //     }
-    //   }
-    // }
-    // setSavedTagList([...savedTagList, ...selectedTags]);
-    //투두리스트를 추가할 때 세이브드 태그 리스트에 없던 셀렉티드 태그 리스트를 세이브드에 추가하는 것
   };
 
   const delSelectedTag = (e) => {
@@ -106,8 +104,8 @@ function App() {
       },
     ]);
     setInputValue("");
+    setTagInputValue("");
     setSelectedTags([]);
-    updateTagList();
   };
 
   const completeCheck = (e) => {
@@ -126,9 +124,9 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="wrap">
       <h1>ToDo List</h1>
-      <form onSubmit={addNewTodo}>
+      <form className="todo-form" onSubmit={addNewTodo}>
         <input
           onChange={writeTodoText}
           value={inputValue}
@@ -138,60 +136,66 @@ function App() {
         />
         <button>추가</button>
       </form>
-      <form onSubmit={createNewTag}>
-        <input
-          onChange={writeTagText}
-          onFocus={showTagList}
-          onBlur={showTagList}
-          value={tagInputValue}
-          type="text"
-          placeholder="엔터로 태그 추가"
-        ></input>
-      </form>
-      <div style={{ display: tagListStatus ? "block" : "none" }}>
-        <p>태그 옵션 목록 (토글 필요)</p>
-        {savedTagList.map((tag) => (
-          <li id={tag.id} onClick={selectTag}>
-            {tag.value}
-          </li>
-        ))}
+
+      <div className="tag-select-container">
+        <form className="tag-input-form" onSubmit={createNewTag}>
+          <input
+            onInput={writeTagText}
+            onFocus={showTagList}
+            onBlur={showTagList}
+            value={tagInputValue}
+            type="text"
+            placeholder="태그를 추가해주세요."
+          />
+          <ul className="selected-tags-container">
+            {selectedTags.map((tag) => (
+              <button className="tag" id={tag.id}>
+                {tag.value}
+                <button onClick={delSelectedTag}>X</button>
+              </button>
+            ))}
+          </ul>
+          <div className="saved-tags-list">
+            {/* <div style={{ display: tagListStatus ? "block" : "none" }}> */}
+            <p>태그를 선택하거나 생성해주세요.</p>
+            {tagsFilteredList.map((tag) => (
+              <li id={tag.id} onClick={selectTag}>
+                <span onClick={selectTag} className="tag">
+                  {tag.value}
+                </span>
+              </li>
+            ))}
+            <div
+              className="create-new-tag"
+              style={{ display: tagCreateBtn ? "block" : "none" }}
+            >
+              <button>create</button>
+              <span>{tagInputValue}</span>
+            </div>
+          </div>
+        </form>
       </div>
-      <div>
-        <button
-          style={{ display: tagCreateBtn ? "block" : "none" }}
-          onClick={createNewTag}
-        >
-          create{" "}
-        </button>
-        <span>{tagInputValue}</span>
-      </div>
-      <ul>
-        <span>선택한 태그: </span>
-        {selectedTags.map((tag) => (
-          <span id={tag.id}>
-            #{tag.value}
-            <button onClick={delSelectedTag}>X</button>
-          </span>
-        ))}
-      </ul>
+
       <hr />
-      <ul>
+      <ListGroup>
         <p>투두리스트</p>
         {todoDB.map((todoData) => (
-          <li key={todoData.id} id={todoData.id}>
-            <button onClick={completeCheck}>
+          <ListGroup.Item key={todoData.id} id={todoData.id}>
+            <Button size="sm" onClick={completeCheck}>
               {!todoData.isCompleted ? `🤔` : `😍`}
-            </button>
+            </Button>
             {todoData.content}
-            <button onClick={deleteTodo}>X</button>
+            <Button variant="outline-danger" size="sm" onClick={deleteTodo}>
+              X
+            </Button>
             <div>
               {todoData.tags.map((tag) => (
-                <span>#{tag.value} </span>
+                <button className="tag">{tag.value} </button>
               ))}
             </div>
-          </li>
+          </ListGroup.Item>
         ))}
-      </ul>
+      </ListGroup>
     </div>
   );
 }

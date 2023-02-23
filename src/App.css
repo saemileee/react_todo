@@ -1,38 +1,128 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.wrap {
+  width: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+h1 {
+  color: dodgerblue;
+  font-weight: 900;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.todo-form {
+  width: 70%;
+}
+
+.todo-form input {
+  width: 100%;
+  height: 36px;
+  border: none;
+  border-bottom: 1px solid #d8d8d8;
+}
+
+.todo-form input[type="text"] {
+  padding: 6px;
+}
+.tag-select-container {
+  width: 60%;
+  border: #ededed 1px solid;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.selected-tags-container {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  margin-top: 6px;
+  text-align: left;
+}
+
+/* .tag-input-form {
+  width: 100%;
+} */
+
+.tag-input-form input {
+  height: 26px;
+  font-size: 14px;
+  border: none;
+  border-bottom: solid 1px #bcbcbc;
+  border-radius: 4px;
+  background-color: #ececec;
+  position: relative;
+  right: 0;
+  justify-items: flex-end;
+  display: block;
+  width: 100%;
+}
+
+.create-new-tag {
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  padding: 4px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.create-new-tag button {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+}
+
+.create-new-tag span {
+  display: inline-block;
+}
+
+.tag {
+  border: none;
+  border-radius: 6px;
+  margin-right: 6px;
+  font-size: 14px;
+  padding: 2px 6px 2px 6px;
+  background-color: rgb(222, 232, 240);
+  margin-bottom: 8px;
+}
+
+.tag button {
+  margin-left: 6px;
+  padding: 1px;
+  border: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 12px;
+  color: #7f7f7f;
+}
+
+.saved-tags-list {
+  margin-top: 10px;
+}
+
+.saved-tags-list p {
+  font-size: 13px;
+  margin-bottom: 2px;
+  color: #7f7f7f;
+}
+
+.saved-tags-list li {
+  margin-bottom: 1px;
+  padding: 2px 0 2px 0;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.saved-tags-list li::marker {
+  margin: 2px 2px 2px 2px;
+  color: #d8d8d8;
+}
+
+.saved-tags-list li:hover {
+  background-color: #ebebeb;
 }
