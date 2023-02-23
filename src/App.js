@@ -8,6 +8,15 @@ function App() {
   const [newTag, setNewTag] = useState([]);
   const [tagInputValue, setTagInputValue] = useState();
   const [tagListStatus, setTagListStatus] = useState(false);
+  const [tagCreateBtn, setTagCreateBtn] = useState(false);
+
+  const showTagCreateBtn = () => {
+    if (savedTagList.filter((tag) => tag.value == tagInputValue).length == 0) {
+      setTagCreateBtn(true);
+    } else {
+      setTagCreateBtn(false);
+    }
+  };
 
   const showTagList = () => {
     setTagListStatus((current) => !current);
@@ -15,21 +24,33 @@ function App() {
 
   const writeTagText = (e) => {
     setTagInputValue(e.target.value);
+    showTagCreateBtn();
   };
 
-  const addNewTag = (e) => {
+  //있는 태그를 검색해서 선택하는 경우 = 2번,
+
+  //새 태그를 크리에이트하는 경우 = 1번의 경우
+  const createNewTag = (e) => {
     e.preventDefault();
     setNewTag({ id: new Date().getTime(), value: tagInputValue });
     const selectedTagFiltered = [...selectedTags].filter(
       (tag) => tag.value == tagInputValue
     );
+    const savedTagListFiltered = [...savedTagList].filter(
+      (tag) => tag.value == tagInputValue
+    );
 
-    if (selectedTagFiltered.length == 0) {
+    if (selectedTagFiltered.length == 0 && savedTagListFiltered.length == 0) {
       setSelectedTags([
         ...selectedTags,
         { id: new Date().getTime(), value: tagInputValue },
       ]);
+      setSavedTagList([
+        ...savedTagList,
+        { id: new Date().getTime(), value: tagInputValue },
+      ]);
     }
+
     setTagInputValue("");
 
     // 저장된 value 값이 이미 저장된 taglist의 value 값하고 같은 경우 찾았따!
@@ -59,7 +80,7 @@ function App() {
     //     }
     //   }
     // }
-    setSavedTagList([...savedTagList, ...selectedTags]);
+    // setSavedTagList([...savedTagList, ...selectedTags]);
     //투두리스트를 추가할 때 세이브드 태그 리스트에 없던 셀렉티드 태그 리스트를 세이브드에 추가하는 것
   };
 
@@ -117,7 +138,7 @@ function App() {
         />
         <button>추가</button>
       </form>
-      <form onSubmit={addNewTag}>
+      <form onSubmit={createNewTag}>
         <input
           onChange={writeTagText}
           onFocus={showTagList}
@@ -134,6 +155,15 @@ function App() {
             {tag.value}
           </li>
         ))}
+      </div>
+      <div>
+        <button
+          style={{ display: tagCreateBtn ? "block" : "none" }}
+          onClick={createNewTag}
+        >
+          create{" "}
+        </button>
+        <span>{tagInputValue}</span>
       </div>
       <ul>
         <span>선택한 태그: </span>
