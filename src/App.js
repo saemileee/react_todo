@@ -179,6 +179,17 @@ function App() {
       <hr />
       <ListGroup>
         <p>투두리스트</p>
+        <ul className="tab">
+          <li>ALL ({todoDB.length})</li>
+          <li>
+            Completed (
+            {todoDB.filter((todo) => todo.isCompleted == true).length})
+          </li>
+          <li>
+            Uncompleted (
+            {todoDB.filter((todo) => todo.isCompleted == false).length})
+          </li>
+        </ul>
         {todoDB.map((todoData) => (
           <ListGroup.Item key={todoData.id} id={todoData.id}>
             <Button className="complete-btn" size="sm" onClick={completeCheck}>

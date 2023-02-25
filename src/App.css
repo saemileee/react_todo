@@ -141,5 +141,15 @@ h1 {
 }
 
 .todo-tags {
-  margin-top: 6px;
+}
+
+.tab {
+  border: #7f7f7f solid 1px;
+}
+
+.tab li {
+  display: inline-block;
+  width: 33.3%;
+  text-align: center;
+  border: #7f7f7f solid 1px;
 }
