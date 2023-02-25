@@ -181,14 +181,14 @@ function App() {
         <p>투두리스트</p>
         {todoDB.map((todoData) => (
           <ListGroup.Item key={todoData.id} id={todoData.id}>
-            <Button size="sm" onClick={completeCheck}>
+            <Button className="complete-btn" size="sm" onClick={completeCheck}>
               {!todoData.isCompleted ? `🤔` : `😍`}
             </Button>
-            {todoData.content}
+            <span className="todo-content">{todoData.content}</span>
             <Button variant="outline-danger" size="sm" onClick={deleteTodo}>
               X
             </Button>
-            <div>
+            <div className="todo-tags">
               {todoData.tags.map((tag) => (
                 <button className="tag">{tag.value} </button>
               ))}

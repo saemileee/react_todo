@@ -126,3 +126,20 @@ h1 {
 .saved-tags-list li:hover {
   background-color: #ebebeb;
 }
+
+.list-group {
+  width: 80%;
+}
+
+.complete-btn {
+  margin-right: 6px;
+}
+
+.todo-content {
+  display: inline-block;
+  width: 80%;
+}
+
+.todo-tags {
+  margin-top: 6px;
+}
