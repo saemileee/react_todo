@@ -29,7 +29,7 @@ function App() {
 
   const [showOption, setShowOption] = useState("all");
 
-  const [selectedTagForSearch, setSelectedTagForSearch] = useState("");
+  const [selectedTagForSearch, setSelectedTagForSearch] = useState(null);
 
   const onClickTag = (e) => {
     setTodoDB(
@@ -185,10 +185,20 @@ function App() {
         return todoData;
       })
     );
+
+    setOGTodoDB(
+      todoDB.map((todoData) => {
+        if (todoData.id == e.target.parentElement.id) {
+          return { ...todoData, isCompleted: !todoData.isCompleted };
+        }
+        return todoData;
+      })
+    );
   };
 
   const deleteTodo = (e) => {
     setTodoDB(todoDB.filter((data) => e.target.parentElement.id != data.id));
+    setOGTodoDB(todoDB.filter((data) => e.target.parentElement.id != data.id));
   };
 
   return (
@@ -247,8 +257,8 @@ function App() {
       <hr />
       <ListGroup>
         <p>투두리스트</p>
-        <p>
-          필터:{" "}
+        <p style={{ display: selectedTagForSearch == null ? "none" : "block" }}>
+          필터: {""}
           <span className="tag">
             {selectedTagForSearch}
             <button onClick={allList}>X</button>
