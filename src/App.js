@@ -12,6 +12,7 @@ import "./reset.css";
 import "./App.css";
 
 function App() {
+  const [ogTodoDB, setOGTodoDB] = useState([]);
   const [todoDB, setTodoDB] = useState([]);
   const [inputValue, setInputValue] = useState();
   const [selectedTags, setSelectedTags] = useState([]);
@@ -28,6 +29,24 @@ function App() {
 
   const [showOption, setShowOption] = useState("all");
 
+  const [selectedTagForSearch, setSelectedTagForSearch] = useState("");
+
+  const onClickTag = (e) => {
+    setTodoDB(
+      todoDB.filter(
+        (todo) => todo.tags.filter((tag) => tag.id == e.target.id).length > 0
+      )
+    );
+    setSelectedTagForSearch(e.target.childNodes[0].data);
+    // console.log(e.target.childNodes[0].data);
+    //todoDB에서 클릭한 태그 id가 같은 태그가 속한 투두 리스트만 보여주기
+  };
+
+  const allList = () => {
+    setSelectedTagForSearch(undefined);
+    setTodoDB([...ogTodoDB]);
+  };
+
   const paintTodo = (todo) => {
     return (
       <li key={todo.id} id={todo.id}>
@@ -40,7 +59,9 @@ function App() {
         </Button>
         <div className="todo-tags">
           {todo.tags.map((tag) => (
-            <button className="tag">{tag.value} </button>
+            <button id={tag.id} onClick={onClickTag} className="tag">
+              {tag.value}{" "}
+            </button>
           ))}
         </div>
       </li>
@@ -131,6 +152,16 @@ function App() {
   const addNewTodo = (e) => {
     e.preventDefault();
     const newID = new Date().getTime();
+    setOGTodoDB([
+      ...todoDB,
+      {
+        id: newID,
+        content: inputValue,
+        isCompleted: false,
+        tags: selectedTags,
+      },
+    ]);
+
     setTodoDB([
       ...todoDB,
       {
@@ -216,6 +247,14 @@ function App() {
       <hr />
       <ListGroup>
         <p>투두리스트</p>
+        <p>
+          필터:{" "}
+          <span className="tag">
+            {selectedTagForSearch}
+            <button onClick={allList}>X</button>
+          </span>
+        </p>
+        {/* 선택한 태그 명이 나오기 */}
         <ul className="tab">
           <li onClick={selectShowAllOption}>ALL ({todoDB.length})</li>
           <li onClick={selectShowCompletedOption}>
