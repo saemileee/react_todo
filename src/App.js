@@ -40,6 +40,15 @@ function App() {
     setLoading(true);
   }, []);
 
+  useEffect(() => {
+    window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
+  }, [savedTagList]);
+
+  useEffect(() => {
+    window.localStorage.setItem("todoDB", JSON.stringify(todoDB));
+    window.localStorage.setItem("ogTodoDB", JSON.stringify(ogTodoDB));
+  }, [todoDB, ogTodoDB]);
+
   const getTodoDB = () => {
     setTodoDB(JSON.parse(localStorage.getItem("todoDB")));
     setOGTodoDB(JSON.parse(localStorage.getItem("ogTodoDB")));
@@ -136,7 +145,7 @@ function App() {
 
     setTagInputValue("");
     setTagCreateBtn(false);
-    window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
+    // window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
 
     // 저장된 value 값이 이미 저장된 taglist의 value 값하고 같은 경우 찾았따!
     //1. 작성한 태그가 selectedTag, savedTagList에 없는 경우
@@ -221,15 +230,6 @@ function App() {
       ogTodoDB.filter((data) => e.target.parentElement.id != data.id)
     );
   };
-
-  const setLocalTodoDB = () => {
-    window.localStorage.setItem("todoDB", JSON.stringify(todoDB));
-    window.localStorage.setItem("ogTodoDB", JSON.stringify(ogTodoDB));
-  };
-
-  if (loading == true) {
-    setLocalTodoDB();
-  }
 
   return (
     <div className="wrap">
