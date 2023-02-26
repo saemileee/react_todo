@@ -22,6 +22,43 @@ function App() {
   const [tagCreateBtn, setTagCreateBtn] = useState(false);
   const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
+  const completedTodoDB = todoDB.filter((todo) => todo.isCompleted == true);
+
+  const uncompletedTodoDB = todoDB.filter((todo) => todo.isCompleted == false);
+
+  const [showOption, setShowOption] = useState("all");
+
+  const paintTodo = (todo) => {
+    return (
+      <li key={todo.id} id={todo.id}>
+        <button className="complete-btn" onClick={completeCheck}>
+          {!todo.isCompleted ? `🤔` : `😍`}
+        </button>
+        <span className="todo-content">{todo.content}</span>
+        <Button variant="outline-danger" size="sm" onClick={deleteTodo}>
+          X
+        </Button>
+        <div className="todo-tags">
+          {todo.tags.map((tag) => (
+            <button className="tag">{tag.value} </button>
+          ))}
+        </div>
+      </li>
+    );
+  };
+
+  const selectShowAllOption = () => {
+    setShowOption("all");
+  };
+
+  const selectShowCompletedOption = () => {
+    setShowOption("completed");
+  };
+
+  const selectShowUncompletedOption = () => {
+    setShowOption("uncompleted");
+  };
+
   const showTagList = () => {
     setTagListStatus((current) => !current);
   };
@@ -180,32 +217,19 @@ function App() {
       <ListGroup>
         <p>투두리스트</p>
         <ul className="tab">
-          <li>ALL ({todoDB.length})</li>
-          <li>
-            Completed (
-            {todoDB.filter((todo) => todo.isCompleted == true).length})
+          <li onClick={selectShowAllOption}>ALL ({todoDB.length})</li>
+          <li onClick={selectShowCompletedOption}>
+            Completed ({completedTodoDB.length})
           </li>
-          <li>
-            Uncompleted (
-            {todoDB.filter((todo) => todo.isCompleted == false).length})
+          <li onClick={selectShowUncompletedOption}>
+            Uncompleted ({uncompletedTodoDB.length})
           </li>
         </ul>
-        {todoDB.map((todoData) => (
-          <ListGroup.Item key={todoData.id} id={todoData.id}>
-            <Button className="complete-btn" size="sm" onClick={completeCheck}>
-              {!todoData.isCompleted ? `🤔` : `😍`}
-            </Button>
-            <span className="todo-content">{todoData.content}</span>
-            <Button variant="outline-danger" size="sm" onClick={deleteTodo}>
-              X
-            </Button>
-            <div className="todo-tags">
-              {todoData.tags.map((tag) => (
-                <button className="tag">{tag.value} </button>
-              ))}
-            </div>
-          </ListGroup.Item>
-        ))}
+        {showOption == "all"
+          ? todoDB.map((todo) => paintTodo(todo))
+          : showOption == "completed"
+          ? completedTodoDB.map((todo) => paintTodo(todo))
+          : uncompletedTodoDB.map((todo) => paintTodo(todo))}
       </ListGroup>
     </div>
   );
