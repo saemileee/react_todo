@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   ListGroup,
@@ -23,6 +23,8 @@ function App() {
   const [tagCreateBtn, setTagCreateBtn] = useState(false);
   const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
+  // window.localStorage.setItem("todoDB", []);
+
   const completedTodoDB = todoDB.filter((todo) => todo.isCompleted == true);
 
   const uncompletedTodoDB = todoDB.filter((todo) => todo.isCompleted == false);
@@ -30,6 +32,19 @@ function App() {
   const [showOption, setShowOption] = useState("all");
 
   const [selectedTagForSearch, setSelectedTagForSearch] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getTodoDB();
+    setLoading(true);
+  }, []);
+
+  const getTodoDB = () => {
+    setTodoDB(JSON.parse(localStorage.getItem("todoDB")));
+    setOGTodoDB(JSON.parse(localStorage.getItem("ogTodoDB")));
+    setSavedTagList(JSON.parse(localStorage.getItem("tagList")));
+  };
 
   const onClickTag = (e) => {
     setTodoDB(
@@ -43,7 +58,7 @@ function App() {
   };
 
   const allList = () => {
-    setSelectedTagForSearch(undefined);
+    setSelectedTagForSearch(null);
     setTodoDB([...ogTodoDB]);
   };
 
@@ -121,6 +136,7 @@ function App() {
 
     setTagInputValue("");
     setTagCreateBtn(false);
+    window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
 
     // 저장된 value 값이 이미 저장된 taglist의 value 값하고 같은 경우 찾았따!
     //1. 작성한 태그가 selectedTag, savedTagList에 없는 경우
@@ -174,6 +190,9 @@ function App() {
     setInputValue("");
     setTagInputValue("");
     setSelectedTags([]);
+
+    // window.localStorage.setItem("todoDB", JSON.stringify(todoDB));
+    // window.localStorage.setItem("ogTodoDB", JSON.stringify(ogTodoDB));
   };
 
   const completeCheck = (e) => {
@@ -187,7 +206,7 @@ function App() {
     );
 
     setOGTodoDB(
-      todoDB.map((todoData) => {
+      ogTodoDB.map((todoData) => {
         if (todoData.id == e.target.parentElement.id) {
           return { ...todoData, isCompleted: !todoData.isCompleted };
         }
@@ -198,8 +217,19 @@ function App() {
 
   const deleteTodo = (e) => {
     setTodoDB(todoDB.filter((data) => e.target.parentElement.id != data.id));
-    setOGTodoDB(todoDB.filter((data) => e.target.parentElement.id != data.id));
+    setOGTodoDB(
+      ogTodoDB.filter((data) => e.target.parentElement.id != data.id)
+    );
   };
+
+  const setLocalTodoDB = () => {
+    window.localStorage.setItem("todoDB", JSON.stringify(todoDB));
+    window.localStorage.setItem("ogTodoDB", JSON.stringify(ogTodoDB));
+  };
+
+  if (loading == true) {
+    setLocalTodoDB();
+  }
 
   return (
     <div className="wrap">

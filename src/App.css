@@ -127,6 +127,10 @@ h1 {
   background-color: #ebebeb;
 }
 
+.saved-tags-list span {
+  cursor: pointer;
+}
+
 .list-group {
   width: 80%;
 }
@@ -153,4 +157,5 @@ h1 {
   width: 33.3%;
   text-align: center;
   border: #7f7f7f solid 1px;
+  cursor: pointer;
 }
