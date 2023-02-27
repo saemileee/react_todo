@@ -23,8 +23,6 @@ function App() {
   const [tagCreateBtn, setTagCreateBtn] = useState(false);
   const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
-  // window.localStorage.setItem("todoDB", []);
-
   const completedTodoDB = todoDB.filter((todo) => todo.isCompleted == true);
 
   const uncompletedTodoDB = todoDB.filter((todo) => todo.isCompleted == false);
@@ -50,7 +48,7 @@ function App() {
   }, [todoDB, ogTodoDB]);
 
   const getTodoDB = () => {
-    setTodoDB(JSON.parse(localStorage.getItem("todoDB")));
+    setTodoDB(JSON.parse(localStorage.getItem("ogTodoDB")));
     setOGTodoDB(JSON.parse(localStorage.getItem("ogTodoDB")));
     setSavedTagList(JSON.parse(localStorage.getItem("tagList")));
   };
@@ -73,14 +71,18 @@ function App() {
 
   const paintTodo = (todo) => {
     return (
-      <li key={todo.id} id={todo.id}>
+      <li
+        className={todo.isCompleted ? "completed" : null}
+        key={todo.id}
+        id={todo.id}
+      >
         <button className="complete-btn" onClick={completeCheck}>
-          {!todo.isCompleted ? `🤔` : `😍`}
+          {!todo.isCompleted ? `🤔 미완료` : `😍 완료`}
         </button>
-        <span className="todo-content">{todo.content}</span>
-        <Button variant="outline-danger" size="sm" onClick={deleteTodo}>
+        <button className="del-task-btn" onClick={deleteTodo}>
           X
-        </Button>
+        </button>
+        <p className="todo-content">{todo.content}</p>
         <div className="todo-tags">
           {todo.tags.map((tag) => (
             <button id={tag.id} onClick={onClickTag} className="tag">
@@ -233,60 +235,11 @@ function App() {
 
   return (
     <div className="wrap">
-      <h1>ToDo List</h1>
-      <form className="todo-form" onSubmit={addNewTodo}>
-        <input
-          onChange={writeTodoText}
-          value={inputValue}
-          required
-          type="text"
-          placeholder="할 일을 입력해 주세요."
-        />
-        <button>추가</button>
-      </form>
-
-      <div className="tag-select-container">
-        <form className="tag-input-form" onSubmit={createNewTag}>
-          <input
-            onInput={writeTagText}
-            onFocus={showTagList}
-            onBlur={showTagList}
-            value={tagInputValue}
-            type="text"
-            placeholder="태그를 추가해주세요."
-          />
-          <ul className="selected-tags-container">
-            {selectedTags.map((tag) => (
-              <button className="tag" id={tag.id}>
-                {tag.value}
-                <button onClick={delSelectedTag}>X</button>
-              </button>
-            ))}
-          </ul>
-          <div className="saved-tags-list">
-            {/* <div style={{ display: tagListStatus ? "block" : "none" }}> */}
-            <p>태그를 선택하거나 생성해주세요.</p>
-            {tagsFilteredList.map((tag) => (
-              <li id={tag.id} onClick={selectTag}>
-                <span onClick={selectTag} className="tag">
-                  {tag.value}
-                </span>
-              </li>
-            ))}
-            <div
-              className="create-new-tag"
-              style={{ display: tagCreateBtn ? "block" : "none" }}
-            >
-              <button>create</button>
-              <span>{tagInputValue}</span>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <hr />
-      <ListGroup>
-        <p>투두리스트</p>
+      <h1>
+        Manage
+        <br /> your tasks✏️
+      </h1>
+      <div>
         <p style={{ display: selectedTagForSearch == null ? "none" : "block" }}>
           필터: {""}
           <span className="tag">
@@ -296,20 +249,84 @@ function App() {
         </p>
         {/* 선택한 태그 명이 나오기 */}
         <ul className="tab">
-          <li onClick={selectShowAllOption}>ALL ({todoDB.length})</li>
-          <li onClick={selectShowCompletedOption}>
-            Completed ({completedTodoDB.length})
+          <li
+            className={showOption == "all" ? "selected" : null}
+            onClick={selectShowAllOption}
+          >
+            전체 <span>{todoDB.length}</span>
           </li>
-          <li onClick={selectShowUncompletedOption}>
-            Uncompleted ({uncompletedTodoDB.length})
+          <li
+            className={showOption == "completed" ? "selected" : null}
+            onClick={selectShowCompletedOption}
+          >
+            완료 <span>{completedTodoDB.length}</span>
+          </li>
+          <li
+            className={showOption == "uncompleted" ? "selected" : null}
+            onClick={selectShowUncompletedOption}
+          >
+            미완료 <span>{uncompletedTodoDB.length}</span>
           </li>
         </ul>
-        {showOption == "all"
-          ? todoDB.map((todo) => paintTodo(todo))
-          : showOption == "completed"
-          ? completedTodoDB.map((todo) => paintTodo(todo))
-          : uncompletedTodoDB.map((todo) => paintTodo(todo))}
-      </ListGroup>
+        <ul id="task-list">
+          {showOption == "all"
+            ? todoDB.map((todo) => paintTodo(todo))
+            : showOption == "completed"
+            ? completedTodoDB.map((todo) => paintTodo(todo))
+            : uncompletedTodoDB.map((todo) => paintTodo(todo))}
+        </ul>
+      </div>
+      <div id="add-task">
+        <form className="todo-form" onSubmit={addNewTodo}>
+          <input
+            onChange={writeTodoText}
+            value={inputValue}
+            required
+            type="text"
+            placeholder="할 일을 입력해 주세요."
+          />
+          <button>추가</button>
+        </form>
+
+        <div className="tag-select-container">
+          <form className="tag-input-form" onSubmit={createNewTag}>
+            <input
+              onInput={writeTagText}
+              onFocus={showTagList}
+              onBlur={showTagList}
+              value={tagInputValue}
+              type="text"
+              placeholder="태그를 추가해주세요."
+            />
+            <ul className="selected-tags-container">
+              {selectedTags.map((tag) => (
+                <button className="tag" id={tag.id}>
+                  {tag.value}
+                  <button onClick={delSelectedTag}>X</button>
+                </button>
+              ))}
+            </ul>
+            <div className="saved-tags-list">
+              {/* <div style={{ display: tagListStatus ? "block" : "none" }}> */}
+              <p>태그를 선택하거나 생성해주세요.</p>
+              {tagsFilteredList.map((tag) => (
+                <li id={tag.id} onClick={selectTag}>
+                  <span onClick={selectTag} className="tag">
+                    {tag.value}
+                  </span>
+                </li>
+              ))}
+              <div
+                className="create-new-tag"
+                style={{ display: tagCreateBtn ? "block" : "none" }}
+              >
+                <button>create</button>
+                <span>{tagInputValue}</span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

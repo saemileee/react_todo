@@ -1,13 +1,143 @@
+html,
+body {
+  background-color: #1b1b1b;
+}
 .wrap {
-  width: 600px;
+  margin: auto;
+  width: 390px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-h1 {
-  color: dodgerblue;
-  font-weight: 900;
+body h1 {
+  margin: 0px 16px 24px 16px;
+  padding-top: 50px;
+  width: 358px;
+  font-size: 42px;
+  color: rgb(255, 255, 255);
+  font-weight: 600;
+  line-height: 40px;
+  /* font-family: "Noto Sans", "sans-serif"; */
+}
+
+/* 탭 */
+
+.tab {
+  margin: 14px 16px 14px 16px;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 358px;
+  height: 48px;
+  background-color: #313131;
+  border-radius: 8px;
+  border: #ebebeb67 1px solid;
+}
+
+.tab li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 109px;
+  height: 80%;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ffff;
+  font-weight: normal;
+  font-size: 13px;
+}
+
+.tab li.selected {
+  background-color: #ffffff;
+  color: #1b1b1b;
+}
+
+.tab li span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 16px;
+  margin-left: 6px;
+  width: 16px;
+  height: 16px;
+  background-color: #b5cff8b7;
+  border-radius: 4px;
+  color: #1b1b1b;
+}
+
+/* 투두리스트 */
+#task-list {
+  margin: 18px 16px 24px 16px;
+  padding: 0;
+}
+
+#task-list li {
+  width: 358px;
+  border-radius: 10px;
+  background-color: #b5cff8;
+  margin-bottom: 14px;
+  padding: 10px 12px 10px 12px;
+}
+
+#task-list li.completed {
+  background-color: #313131;
+}
+
+#task-list li button {
+  display: block;
+}
+
+#task-list li button.complete-btn {
+  border: 1px solid #4d84de;
+  border-radius: 30px;
+  background-color: #ffffff68;
+  color: #4d84de;
+  float: left;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 6px 12px 4px 9px;
+  margin-bottom: 14px;
+}
+
+#task-list li.completed button.complete-btn {
+  background-color: #505050;
+  border: 1px solid #505050;
+  color: #fff;
+}
+
+#task-list li button.del-task-btn {
+  float: right;
+  font-size: 10px;
+  border: none;
+  color: black;
+  border-radius: 100%;
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  background: none;
+  text-align: center;
+}
+
+#task-list li.completed button.del-task-btn {
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+#task-list li p.todo-content {
+  clear: both;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+#task-list li.completed p.todo-content {
+  color: #fff;
+}
+
+#task-list li .todo-tags {
+  display: flex;
 }
 
 .todo-form {
@@ -81,12 +211,12 @@ h1 {
 
 .tag {
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   margin-right: 6px;
   font-size: 14px;
-  padding: 2px 6px 2px 6px;
+  padding: 4px 6px 2px 6px;
   background-color: rgb(222, 232, 240);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .tag button {
@@ -128,34 +258,5 @@ h1 {
 }
 
 .saved-tags-list span {
-  cursor: pointer;
-}
-
-.list-group {
-  width: 80%;
-}
-
-.complete-btn {
-  margin-right: 6px;
-}
-
-.todo-content {
-  display: inline-block;
-  width: 80%;
-}
-
-.todo-tags {
-  margin-top: 6px;
-}
-
-.tab {
-  border: #7f7f7f solid 1px;
-}
-
-.tab li {
-  display: inline-block;
-  width: 33.3%;
-  text-align: center;
-  border: #7f7f7f solid 1px;
   cursor: pointer;
 }
