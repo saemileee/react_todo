@@ -1,5 +1,5 @@
 html,
-body {
+html body {
   background-color: #1b1b1b;
 }
 .wrap {
@@ -19,6 +19,20 @@ body h1 {
   font-weight: 600;
   line-height: 40px;
   /* font-family: "Noto Sans", "sans-serif"; */
+}
+
+/* 할 일 추가 버튼 */
+#add-task-btn {
+  position: fixed;
+  top: 90%;
+  right: 140px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  background-color: #4d84de;
+  color: #fff;
+  box-shadow: 0px 4px 8px hsl(0deg 0% 0% / 0.25);
+  border-radius: 100%;
 }
 
 /* 탭 */
@@ -140,75 +154,7 @@ body h1 {
   display: flex;
 }
 
-.todo-form {
-  width: 70%;
-}
-
-.todo-form input {
-  width: 100%;
-  height: 36px;
-  border: none;
-  border-bottom: 1px solid #d8d8d8;
-}
-
-.todo-form input[type="text"] {
-  padding: 6px;
-}
-.tag-select-container {
-  width: 60%;
-  border: #ededed 1px solid;
-  border-radius: 8px;
-  padding: 8px;
-}
-
-.selected-tags-container {
-  width: 100%;
-  height: 100%;
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-  margin-top: 6px;
-  text-align: left;
-}
-
-/* .tag-input-form {
-  width: 100%;
-} */
-
-.tag-input-form input {
-  height: 26px;
-  font-size: 14px;
-  border: none;
-  border-bottom: solid 1px #bcbcbc;
-  border-radius: 4px;
-  background-color: #ececec;
-  position: relative;
-  right: 0;
-  justify-items: flex-end;
-  display: block;
-  width: 100%;
-}
-
-.create-new-tag {
-  border: 1px solid #d8d8d8;
-  border-radius: 8px;
-  padding: 4px;
-  margin-top: 10px;
-  width: 100%;
-}
-
-.create-new-tag button {
-  display: inline-block;
-  margin-right: 8px;
-  font-size: 14px;
-  border: none;
-  border-radius: 6px;
-}
-
-.create-new-tag span {
-  display: inline-block;
-}
-
+/* 태그 */
 .tag {
   border: none;
   border-radius: 4px;
@@ -231,32 +177,113 @@ body h1 {
   color: #7f7f7f;
 }
 
-.saved-tags-list {
-  margin-top: 10px;
+/* add todo */
+#add-task {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  bottom: 0;
+  width: 385px;
+  background-color: #313131;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0px -2px 15px #7f7f7f3c;
+  padding-bottom: 30px;
+}
+#add-task h2 {
+  color: #fff;
+  margin: 16px 16px 16px 16px;
 }
 
-.saved-tags-list p {
-  font-size: 13px;
-  margin-bottom: 2px;
-  color: #7f7f7f;
+#add-task h2 button {
+  float: right;
+  border: none;
+  background: none;
+  color: #fff;
+  height: 30px;
+  font-size: 18px;
+  font-weight: 200;
 }
 
-.saved-tags-list li {
-  margin-bottom: 1px;
-  padding: 2px 0 2px 0;
-  cursor: pointer;
+#add-task .todo-form {
+  padding: 16px;
+  width: 358px;
+}
+
+#add-task .input-container {
+  display: flex;
+  justify-content: left;
+}
+
+#add-task .view-more-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 100%;
+  margin: 0 8px 0 16px;
+}
+
+#add-task .todo-form {
+  padding: 0;
+  margin: 0 16px 0 0;
+}
+
+#add-task input {
+  height: 36px;
+  width: 100%;
   border-radius: 8px;
+  border: none;
+  background-color: #505050;
 }
 
-.saved-tags-list li::marker {
-  margin: 2px 2px 2px 2px;
-  color: #d8d8d8;
+#add-task input[type="text" i] {
+  padding: 2px 8px;
+  color: #ffffff;
 }
 
-.saved-tags-list li:hover {
-  background-color: #ebebeb;
+/* 태그 옵션 선택 */
+
+#tag-select-container {
+  display: none;
+  margin: 8px 16px 8px 16px;
 }
 
-.saved-tags-list span {
-  cursor: pointer;
+#tag-select-container h3 {
+  margin: 16px 0 8px 0;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+/* 할 일 풀페이지 */
+#add-task.full-page {
+  height: 95%;
+}
+
+#add-task.full-page #tag-select-container {
+  display: block;
+}
+
+#add-task.full-page .saved-tags-list {
+  padding: 8px 8px 8px 16px;
+  z-index: 1;
+  background-color: #7f7f7f;
+  border-radius: 8px;
+  box-shadow: 0 0 6px #7f7f7f;
+  height: 300px;
+  overflow: hidden;
+}
+
+#add-task.full-page .saved-tags-list p {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+#add-task.full-page .saved-tags-list ul {
+  height: 260px;
+  padding: 0;
+  overflow-y: scroll;
+}
+
+#add-task.full-page .saved-tags-list li {
+  margin-bottom: 6px;
 }

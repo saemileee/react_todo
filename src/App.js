@@ -64,6 +64,18 @@ function App() {
     //todoDB에서 클릭한 태그 id가 같은 태그가 속한 투두 리스트만 보여주기
   };
 
+  const [showCreateTask, setShowCreateTask] = useState(false);
+
+  const [showCreateMore, setShowCreateMore] = useState(false);
+
+  const onShowCreateMore = () => {
+    setShowCreateMore((current) => !current);
+  };
+
+  const onShowCreateTask = () => {
+    setShowCreateTask((current) => !current);
+  };
+
   const allList = () => {
     setSelectedTagForSearch(null);
     setTodoDB([...ogTodoDB]);
@@ -180,23 +192,23 @@ function App() {
     e.preventDefault();
     const newID = new Date().getTime();
     setOGTodoDB([
-      ...todoDB,
       {
         id: newID,
         content: inputValue,
         isCompleted: false,
         tags: selectedTags,
       },
+      ...todoDB,
     ]);
 
     setTodoDB([
-      ...todoDB,
       {
         id: newID,
         content: inputValue,
         isCompleted: false,
         tags: selectedTags,
       },
+      ...todoDB,
     ]);
     setInputValue("");
     setTagInputValue("");
@@ -239,6 +251,9 @@ function App() {
         Manage
         <br /> your tasks✏️
       </h1>
+      <button id="add-task-btn" onClick={onShowCreateTask}>
+        ✏️
+      </button>
       <div>
         <p style={{ display: selectedTagForSearch == null ? "none" : "block" }}>
           필터: {""}
@@ -276,19 +291,34 @@ function App() {
             : uncompletedTodoDB.map((todo) => paintTodo(todo))}
         </ul>
       </div>
-      <div id="add-task">
-        <form className="todo-form" onSubmit={addNewTodo}>
-          <input
-            onChange={writeTodoText}
-            value={inputValue}
-            required
-            type="text"
-            placeholder="할 일을 입력해 주세요."
-          />
-          <button>추가</button>
-        </form>
-
-        <div className="tag-select-container">
+      <div
+        id="add-task"
+        className={showCreateMore ? "full-page" : null}
+        style={{ display: showCreateTask ? "block" : "none" }}
+      >
+        <h2>
+          할 일 생성 ✏️ <button onClick={onShowCreateTask}>X</button>
+        </h2>
+        <div className="input-container">
+          <button className="view-more-btn" onClick={onShowCreateMore}>
+            ▼
+          </button>
+          <form className="todo-form" onSubmit={addNewTodo}>
+            <input
+              onChange={writeTodoText}
+              value={inputValue}
+              required
+              type="text"
+              placeholder="할 일을 입력해 주세요."
+            />
+            {/* <button>추가</button> */}
+          </form>
+        </div>
+        <div
+          // style={{ display: showCreateMore ? "block" : "none" }}
+          id="tag-select-container"
+        >
+          <h3>Tags</h3>
           <form className="tag-input-form" onSubmit={createNewTag}>
             <input
               onInput={writeTagText}
@@ -309,20 +339,22 @@ function App() {
             <div className="saved-tags-list">
               {/* <div style={{ display: tagListStatus ? "block" : "none" }}> */}
               <p>태그를 선택하거나 생성해주세요.</p>
-              {tagsFilteredList.map((tag) => (
-                <li id={tag.id} onClick={selectTag}>
-                  <span onClick={selectTag} className="tag">
-                    {tag.value}
-                  </span>
-                </li>
-              ))}
-              <div
-                className="create-new-tag"
-                style={{ display: tagCreateBtn ? "block" : "none" }}
-              >
-                <button>create</button>
-                <span>{tagInputValue}</span>
-              </div>
+              <ul>
+                {tagsFilteredList.map((tag) => (
+                  <li id={tag.id} onClick={selectTag}>
+                    <span onClick={selectTag} className="tag">
+                      {tag.value}
+                    </span>
+                  </li>
+                ))}
+                <div
+                  className="create-new-tag"
+                  style={{ display: tagCreateBtn ? "block" : "none" }}
+                >
+                  <button>create</button>
+                  <span>{tagInputValue}</span>
+                </div>
+              </ul>
             </div>
           </form>
         </div>
