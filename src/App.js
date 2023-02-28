@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  Button,
-  ListGroup,
-  ListGroupItem,
-  Form,
-  InputGroup,
-  Badge,
-} from "react-bootstrap";
+// import {
+//   Button,
+//   ListGroup,
+//   ListGroupItem,
+//   Form,
+//   InputGroup,
+//   Badge,
+// } from "react-bootstrap";
 
 import "./reset.css";
 import "./App.css";
@@ -19,7 +19,7 @@ function App() {
   const [savedTagList, setSavedTagList] = useState([]);
   const [newTag, setNewTag] = useState([]);
   const [tagInputValue, setTagInputValue] = useState();
-  const [tagListStatus, setTagListStatus] = useState(false);
+  const [showTagList, setShowTagList] = useState(false);
   const [tagCreateBtn, setTagCreateBtn] = useState(false);
   const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
@@ -47,6 +47,31 @@ function App() {
     window.localStorage.setItem("ogTodoDB", JSON.stringify(ogTodoDB));
   }, [todoDB, ogTodoDB]);
 
+  const paintSavedTags = () => {
+    return savedTagList.map((tag) => (
+      <li id={tag.id} onClick={selectTag}>
+        <span className="tag">{tag.value}</span>
+      </li>
+    ));
+  };
+
+  const paintRelatedSavedTags = () => {
+    return tagsFilteredList.map((tag) => (
+      <li id={tag.id} onClick={selectTag}>
+        <span className="tag">{tag.value}</span>
+      </li>
+    ));
+  };
+
+  const paintSelectedTags = (tag) => {
+    return (
+      <button className="tag" id={tag.id}>
+        {tag.value}
+        <button onClick={delSelectedTag}>X</button>
+      </button>
+    );
+  };
+
   const getTodoDB = () => {
     setTodoDB(JSON.parse(localStorage.getItem("ogTodoDB")));
     setOGTodoDB(JSON.parse(localStorage.getItem("ogTodoDB")));
@@ -60,8 +85,6 @@ function App() {
       )
     );
     setSelectedTagForSearch(e.target.childNodes[0].data);
-    // console.log(e.target.childNodes[0].data);
-    //todoDB에서 클릭한 태그 id가 같은 태그가 속한 투두 리스트만 보여주기
   };
 
   const [showCreateTask, setShowCreateTask] = useState(false);
@@ -123,27 +146,37 @@ function App() {
     setShowOption("uncompleted");
   };
 
-  const showTagList = () => {
-    setTagListStatus((current) => !current);
+  const onCloseTagList = () => {
+    setShowTagList(false);
+  };
+
+  const onShowTagList = () => {
+    setShowTagList(true);
   };
 
   const writeTagText = (e) => {
     setTagInputValue(e.target.value);
-    if (savedTagList.filter((tag) => tag.value == e.target.value).length == 0) {
+    const text = e.target.value.replaceAll(" ", "");
+    if (
+      text !== "" &&
+      savedTagList.filter((tag) => tag.value == e.target.value).length == 0
+    ) {
       setTagCreateBtn(true);
     } else {
       setTagCreateBtn(false);
     }
-
     setTagsFilteredList(
       [...savedTagList].filter((tag) => tag.value.includes(e.target.value))
     );
+    // console.log(e.target.value);
   };
 
   //새 태그를 크리에이트하는 경우 = 1번의 경우
   const createNewTag = (e) => {
     e.preventDefault();
-    setNewTag({ id: new Date().getTime(), value: tagInputValue });
+    const text = tagInputValue.replaceAll(" ", "");
+
+    // setNewTag({ id: new Date().getTime(), value: tagInputValue });
     const selectedTagFiltered = [...selectedTags].filter(
       (tag) => tag.value == tagInputValue
     );
@@ -151,7 +184,11 @@ function App() {
       (tag) => tag.value == tagInputValue
     );
 
-    if (selectedTagFiltered.length == 0 && savedTagListFiltered.length == 0) {
+    if (
+      text != "" &&
+      selectedTagFiltered.length == 0 &&
+      savedTagListFiltered.length == 0
+    ) {
       setSelectedTags([
         ...selectedTags,
         { id: new Date().getTime(), value: tagInputValue },
@@ -164,6 +201,7 @@ function App() {
 
     setTagInputValue("");
     setTagCreateBtn(false);
+    paintSavedTags();
     // window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
 
     // 저장된 value 값이 이미 저장된 taglist의 value 값하고 같은 경우 찾았따!
@@ -174,7 +212,8 @@ function App() {
   };
 
   const selectTag = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
+    console.log(e.target.id);
     if ([...selectedTags].filter((tag) => tag.id == e.target.id).length == 0) {
       setSelectedTags([
         ...selectedTags,
@@ -330,36 +369,27 @@ function App() {
           <h3>Tags</h3>
           <form className="tag-input-form" onSubmit={createNewTag}>
             <ul className="selected-tags-container">
-              {selectedTags.map((tag) => (
-                <button className="tag" id={tag.id}>
-                  {tag.value}
-                  <button onClick={delSelectedTag}>X</button>
-                </button>
-              ))}
+              {selectedTags.map((tag) => paintSelectedTags(tag))}
             </ul>
             <input
               onInput={writeTagText}
-              onFocus={showTagList}
-              onBlur={showTagList}
+              onFocus={onShowTagList}
+              // onBlur={showTagList}
               value={tagInputValue}
               type="text"
               placeholder="태그를 추가해주세요."
             />
 
             <div
-              style={{ display: tagListStatus ? "block" : "none" }}
+              style={{ display: showTagList ? "block" : "none" }}
               className="saved-tags-list"
             >
-              {/* <div style={{ display: tagListStatus ? "block" : "none" }}> */}
               <p>
-                태그를 선택하거나 생성해주세요. <button>X</button>
+                태그를 선택하거나 생성해주세요.{" "}
+                <button onClick={onCloseTagList}>X</button>
               </p>
               <ul>
-                {tagsFilteredList.map((tag) => (
-                  <li id={tag.id} onClick={selectTag}>
-                    <span className="tag">{tag.value}</span>
-                  </li>
-                ))}
+                {tagInputValue ? paintRelatedSavedTags() : paintSavedTags()}
                 <div
                   className="create-new-tag"
                   style={{ display: tagCreateBtn ? "block" : "none" }}
