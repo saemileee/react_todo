@@ -8,6 +8,7 @@ html body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 16px;
 }
 
 body h1 {
@@ -240,6 +241,24 @@ body h1 {
   color: #ffffff;
 }
 
+/* 할 일 풀페이지 */
+#add-task.full-page {
+  height: 95%;
+}
+
+#add-task.full-page #tag-select-container {
+  display: block;
+}
+
+/* 태그 생성 콘테이너 */
+#add-task .selected-tags-container {
+  padding-left: 0;
+  position: relative;
+  top: 0;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
 /* 태그 옵션 선택 */
 
 #tag-select-container {
@@ -254,36 +273,59 @@ body h1 {
   font-weight: 300;
 }
 
-/* 할 일 풀페이지 */
-#add-task.full-page {
-  height: 95%;
-}
-
-#add-task.full-page #tag-select-container {
-  display: block;
-}
-
 #add-task.full-page .saved-tags-list {
   padding: 8px 8px 8px 16px;
   z-index: 1;
-  background-color: #7f7f7f;
+  background-color: #505050;
   border-radius: 8px;
-  box-shadow: 0 0 6px #7f7f7f;
-  height: 300px;
+  box-shadow: 0 0 6px #616161;
   overflow: hidden;
 }
 
 #add-task.full-page .saved-tags-list p {
   font-size: 14px;
+  color: #fff;
   margin-bottom: 8px;
 }
 
+#add-task.full-page .saved-tags-list p button {
+  float: right;
+  border: none;
+  color: #fff;
+  background: none;
+}
+
 #add-task.full-page .saved-tags-list ul {
-  height: 260px;
+  max-height: 260px;
   padding: 0;
   overflow-y: scroll;
 }
 
 #add-task.full-page .saved-tags-list li {
+  padding: 2px;
   margin-bottom: 6px;
+}
+
+#add-task.full-page .saved-tags-list li:hover {
+  background-color: #858991;
+  cursor: pointer;
+}
+
+#add-task.full-page .create-new-tag button {
+  border: none;
+  background: none;
+  color: #fff;
+  padding: 0;
+  margin-right: 6px;
+}
+
+/* 태그 검색 결과 */
+.tag-search-result {
+  margin: 0 16px 0 16px;
+  display: flex;
+  width: inherit;
+}
+
+.tag-search-result span:first-child {
+  color: #fff;
 }

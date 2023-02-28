@@ -68,12 +68,17 @@ function App() {
 
   const [showCreateMore, setShowCreateMore] = useState(false);
 
+  const onCloseTaskCreate = () => {
+    setShowCreateMore(false);
+    setShowCreateTask(false);
+  };
+
   const onShowCreateMore = () => {
     setShowCreateMore((current) => !current);
   };
 
   const onShowCreateTask = () => {
-    setShowCreateTask((current) => !current);
+    setShowCreateTask(true);
   };
 
   const allList = () => {
@@ -169,6 +174,7 @@ function App() {
   };
 
   const selectTag = (e) => {
+    e.preventDefault();
     if ([...selectedTags].filter((tag) => tag.id == e.target.id).length == 0) {
       setSelectedTags([
         ...selectedTags,
@@ -255,13 +261,16 @@ function App() {
         ✏️
       </button>
       <div>
-        <p style={{ display: selectedTagForSearch == null ? "none" : "block" }}>
-          필터: {""}
+        <div
+          className="tag-search-result"
+          style={{ display: selectedTagForSearch == null ? "none" : "block" }}
+        >
+          <span>필터: {""}</span>
           <span className="tag">
             {selectedTagForSearch}
             <button onClick={allList}>X</button>
           </span>
-        </p>
+        </div>
         {/* 선택한 태그 명이 나오기 */}
         <ul className="tab">
           <li
@@ -297,7 +306,7 @@ function App() {
         style={{ display: showCreateTask ? "block" : "none" }}
       >
         <h2>
-          할 일 생성 ✏️ <button onClick={onShowCreateTask}>X</button>
+          할 일 생성 ✏️ <button onClick={onCloseTaskCreate}>X</button>
         </h2>
         <div className="input-container">
           <button className="view-more-btn" onClick={onShowCreateMore}>
@@ -320,14 +329,6 @@ function App() {
         >
           <h3>Tags</h3>
           <form className="tag-input-form" onSubmit={createNewTag}>
-            <input
-              onInput={writeTagText}
-              onFocus={showTagList}
-              onBlur={showTagList}
-              value={tagInputValue}
-              type="text"
-              placeholder="태그를 추가해주세요."
-            />
             <ul className="selected-tags-container">
               {selectedTags.map((tag) => (
                 <button className="tag" id={tag.id}>
@@ -336,15 +337,27 @@ function App() {
                 </button>
               ))}
             </ul>
-            <div className="saved-tags-list">
+            <input
+              onInput={writeTagText}
+              onFocus={showTagList}
+              onBlur={showTagList}
+              value={tagInputValue}
+              type="text"
+              placeholder="태그를 추가해주세요."
+            />
+
+            <div
+              style={{ display: tagListStatus ? "block" : "none" }}
+              className="saved-tags-list"
+            >
               {/* <div style={{ display: tagListStatus ? "block" : "none" }}> */}
-              <p>태그를 선택하거나 생성해주세요.</p>
+              <p>
+                태그를 선택하거나 생성해주세요. <button>X</button>
+              </p>
               <ul>
                 {tagsFilteredList.map((tag) => (
                   <li id={tag.id} onClick={selectTag}>
-                    <span onClick={selectTag} className="tag">
-                      {tag.value}
-                    </span>
+                    <span className="tag">{tag.value}</span>
                   </li>
                 ))}
                 <div
@@ -352,7 +365,7 @@ function App() {
                   style={{ display: tagCreateBtn ? "block" : "none" }}
                 >
                   <button>create</button>
-                  <span>{tagInputValue}</span>
+                  <span className="tag">{tagInputValue}</span>
                 </div>
               </ul>
             </div>
