@@ -95,10 +95,24 @@ body h1 {
   background-color: #b5cff8;
   margin-bottom: 14px;
   padding: 10px 12px 10px 12px;
+  transition: background-color 0.1s ease-out;
+  transition: 0.2s ease-out;
+}
+
+#task-list li:hover {
+  background-color: #9ab1d6;
+}
+
+#task-list li:hover .del-task-btn {
+  display: block;
 }
 
 #task-list li.completed {
   background-color: #313131;
+}
+
+#task-list li.completed:hover {
+  background-color: #272727;
 }
 
 #task-list li button {
@@ -124,20 +138,24 @@ body h1 {
 }
 
 #task-list li button.del-task-btn {
+  display: none;
   float: right;
   font-size: 10px;
   border: none;
-  color: black;
-  border-radius: 100%;
+  color: #4d84de;
+  border-radius: 4px;
   width: 20px;
   height: 20px;
-  border: 1px solid black;
-  background: none;
+  border: 1px solid #4d84de;
+  background: #dce9fe;
+  box-shadow: 0 0 4px #4d85de34;
   text-align: center;
 }
 
 #task-list li.completed button.del-task-btn {
-  border: 1px solid #fff;
+  border: 1px solid rgb(56, 56, 56);
+  background: #474747;
+  box-shadow: 0 0 4px #41414134;
   color: #fff;
 }
 
@@ -188,14 +206,28 @@ body h1 {
   background-color: #313131;
   border-radius: 20px 20px 0 0;
   box-shadow: 0px -2px 15px #7f7f7f3c;
-  padding-bottom: 30px;
-}
-#add-task h2 {
-  color: #fff;
-  margin: 16px 16px 16px 16px;
+  padding: 16px 16px 30px 16px;
 }
 
-#add-task h2 button {
+#add-task header {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+#add-task header .view-more-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 100%;
+  margin: 3px 10px 0 2px;
+}
+
+#add-task header h2 {
+  width: 86%;
+  color: #fff;
+}
+
+#add-task header .add-task-close-btn {
   float: right;
   border: none;
   background: none;
@@ -203,6 +235,20 @@ body h1 {
   height: 30px;
   font-size: 18px;
   font-weight: 200;
+}
+
+#add-task h3 {
+  display: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+#add-task.full-page h3 {
+  display: block;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 300;
 }
 
 #add-task .todo-form {
@@ -215,17 +261,8 @@ body h1 {
   justify-content: left;
 }
 
-#add-task .view-more-btn {
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 100%;
-  margin: 0 8px 0 16px;
-}
-
 #add-task .todo-form {
   padding: 0;
-  margin: 0 16px 0 0;
 }
 
 #add-task input {
@@ -246,6 +283,11 @@ body h1 {
   height: 95%;
 }
 
+#add-task.full-page .input-container {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
 #add-task.full-page #tag-select-container {
   display: block;
 }
@@ -263,18 +305,12 @@ body h1 {
 
 #tag-select-container {
   display: none;
-  margin: 8px 16px 8px 16px;
-}
-
-#tag-select-container h3 {
-  margin: 16px 0 8px 0;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 300;
 }
 
 #add-task.full-page .saved-tags-list {
+  width: 353px;
   padding: 8px 8px 8px 16px;
+  position: fixed;
   z-index: 1;
   background-color: #505050;
   border-radius: 8px;
@@ -328,4 +364,15 @@ body h1 {
 
 .tag-search-result span:first-child {
   color: #fff;
+}
+
+/* 할 일 추가 버튼 */
+#add-task.full-page .add-task-btn {
+  border: none;
+  margin: 0 auto;
+  margin-top: 24px;
+  border-radius: 8px;
+  padding: 4px 12px 4px 12px;
+  background-color: #b5cff8;
+  font-weight: 600;
 }

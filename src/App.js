@@ -94,10 +94,14 @@ function App() {
   const onCloseTaskCreate = () => {
     setShowCreateMore(false);
     setShowCreateTask(false);
+    setShowTagList(false);
+    setSelectedTags([]);
   };
 
   const onShowCreateMore = () => {
     setShowCreateMore((current) => !current);
+    setShowTagList(false);
+    setSelectedTags([]);
   };
 
   const onShowCreateTask = () => {
@@ -236,31 +240,37 @@ function App() {
   const addNewTodo = (e) => {
     e.preventDefault();
     const newID = new Date().getTime();
-    setOGTodoDB([
-      {
-        id: newID,
-        content: inputValue,
-        isCompleted: false,
-        tags: selectedTags,
-      },
-      ...todoDB,
-    ]);
+    if (inputValue != "") {
+      setOGTodoDB([
+        {
+          id: newID,
+          content: inputValue,
+          isCompleted: false,
+          tags: selectedTags,
+        },
+        ...ogTodoDB,
+      ]);
 
-    setTodoDB([
-      {
-        id: newID,
-        content: inputValue,
-        isCompleted: false,
-        tags: selectedTags,
-      },
-      ...todoDB,
-    ]);
-    setInputValue("");
-    setTagInputValue("");
-    setSelectedTags([]);
+      setTodoDB([
+        {
+          id: newID,
+          content: inputValue,
+          isCompleted: false,
+          tags: selectedTags,
+        },
+        ...todoDB,
+      ]);
+      setInputValue("");
+      setTagInputValue("");
+      setSelectedTags([]);
+      if (showCreateMore) {
+        setShowCreateMore(false);
+      }
+    }
+  };
 
-    // window.localStorage.setItem("todoDB", JSON.stringify(todoDB));
-    // window.localStorage.setItem("ogTodoDB", JSON.stringify(ogTodoDB));
+  const keepTask = (e) => {
+    e.preventDefault();
   };
 
   const completeCheck = (e) => {
@@ -304,7 +314,7 @@ function App() {
           className="tag-search-result"
           style={{ display: selectedTagForSearch == null ? "none" : "block" }}
         >
-          <span>필터: {""}</span>
+          <span>필터: </span>
           <span className="tag">
             {selectedTagForSearch}
             <button onClick={allList}>X</button>
@@ -344,14 +354,21 @@ function App() {
         className={showCreateMore ? "full-page" : null}
         style={{ display: showCreateTask ? "block" : "none" }}
       >
-        <h2>
-          할 일 생성 ✏️ <button onClick={onCloseTaskCreate}>X</button>
-        </h2>
-        <div className="input-container">
+        <header>
           <button className="view-more-btn" onClick={onShowCreateMore}>
-            ▼
+            {!showCreateMore ? "▼" : "▲"}
           </button>
-          <form className="todo-form" onSubmit={addNewTodo}>
+          <h2>할 일 생성 ✏️</h2>
+          <button onClick={onCloseTaskCreate} className="add-task-close-btn">
+            X
+          </button>
+        </header>
+        <div className="input-container">
+          <form
+            className="todo-form"
+            onSubmit={showCreateMore ? keepTask : addNewTodo}
+          >
+            <h3>Task</h3>
             <input
               onChange={writeTodoText}
               value={inputValue}
@@ -362,10 +379,7 @@ function App() {
             {/* <button>추가</button> */}
           </form>
         </div>
-        <div
-          // style={{ display: showCreateMore ? "block" : "none" }}
-          id="tag-select-container"
-        >
+        <div id="tag-select-container">
           <h3>Tags</h3>
           <form className="tag-input-form" onSubmit={createNewTag}>
             <ul className="selected-tags-container">
@@ -401,6 +415,13 @@ function App() {
             </div>
           </form>
         </div>
+        <button
+          style={{ display: !showCreateMore ? "none" : "block" }}
+          onClick={addNewTodo}
+          className="add-task-btn"
+        >
+          추가
+        </button>
       </div>
     </div>
   );
