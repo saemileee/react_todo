@@ -4,17 +4,19 @@ import "./App.css";
 import TaskStatusTabs from "./components/TaskStatusTabs.js";
 import TodoInput from "./components/TodoInput.js";
 import SelectedTagsList from "./components/SelectedTagsList";
+import TagInput from "./components/TagInput";
 
 function App() {
   const [allTodos, setAllTodos] = useState([]);
   const [todosForRender, setTodosForRender] = useState([]);
   const [inputValue, setInputValue] = useState();
+
   const [selectedTags, setSelectedTags] = useState([]);
   const [savedTagList, setSavedTagList] = useState([]);
   const [newTag, setNewTag] = useState([]);
   const [tagInputValue, setTagInputValue] = useState();
-  const [showTagList, setShowTagList] = useState(false);
-  const [tagCreateBtn, setTagCreateBtn] = useState(false);
+  const [showTagList, setIsSavedTagListShown] = useState(false);
+  const [isCreateTagBtn, setIsCreateTagBtnShown] = useState(false);
   const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
   const completedTodos = todosForRender.filter(
@@ -81,25 +83,25 @@ function App() {
     setSelectedTagForSearch(e.target.childNodes[0].data);
   };
 
-  const [showCreateTask, setShowCreateTask] = useState(false);
+  const [isCreateTodoShown, setIsCreateTodoShown] = useState(false);
 
   const [showMoreCreateOptions, setShowMoreCreateOptions] = useState(false);
 
   const onCloseTaskCreate = () => {
     setShowMoreCreateOptions(false);
-    setShowCreateTask(false);
-    setShowTagList(false);
+    setIsCreateTodoShown(false);
+    setIsSavedTagListShown(false);
     setSelectedTags([]);
   };
 
   const onShowCreateMore = () => {
     setShowMoreCreateOptions((current) => !current);
-    setShowTagList(false);
+    setIsSavedTagListShown(false);
     setSelectedTags([]);
   };
 
   const onShowCreateTask = () => {
-    setShowCreateTask(true);
+    setIsCreateTodoShown(true);
   };
 
   const allList = () => {
@@ -145,29 +147,29 @@ function App() {
   };
 
   const onCloseTagList = () => {
-    setShowTagList(false);
+    setIsSavedTagListShown(false);
   };
 
-  const onShowTagList = () => {
-    setShowTagList(true);
+  const handleShowSavedTagList = () => {
+    setIsSavedTagListShown(true);
   };
 
-  const writeTagText = (e) => {
-    setTagInputValue(e.target.value);
-    const text = e.target.value.replaceAll(" ", "");
-    if (
-      text !== "" &&
-      savedTagList.filter((tag) => tag.value == e.target.value).length == 0
-    ) {
-      setTagCreateBtn(true);
-    } else {
-      setTagCreateBtn(false);
-    }
-    setTagsFilteredList(
-      [...savedTagList].filter((tag) => tag.value.includes(e.target.value))
-    );
-    // console.log(e.target.value);
-  };
+  // const updateTagInputValue = (e) => {
+  //   setTagInputValue(e.target.value);
+  //   const text = e.target.value.replaceAll(" ", "");
+  //   if (
+  //     text !== "" &&
+  //     savedTagList.filter((tag) => tag.value == e.target.value).length == 0
+  //   ) {
+  //     setIsCreateTagBtnShown(true);
+  //   } else {
+  //     setIsCreateTagBtnShown(false);
+  //   }
+  //   setTagsFilteredList(
+  //     [...savedTagList].filter((tag) => tag.value.includes(e.target.value))
+  //   );
+  //   // console.log(e.target.value);
+  // };
 
   //새 태그를 크리에이트하는 경우 = 1번의 경우
   const createNewTag = (e) => {
@@ -198,7 +200,7 @@ function App() {
     }
 
     setTagInputValue("");
-    setTagCreateBtn(false);
+    setIsCreateTagBtnShown(false);
     paintSavedTags();
     // window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
 
@@ -235,9 +237,6 @@ function App() {
     );
   };
 
-  const updateInputValue = (e) => {
-    setInputValue(e.target.value);
-  };
   const addNewTodoHandler = (e) => {
     e.preventDefault();
     const newTodoId = new Date().getTime();
@@ -305,7 +304,7 @@ function App() {
         Manage
         <br /> your tasks✏️
       </h1>
-      <button id="add-task-btn" onClick={onShowCreateTask}>
+      <button id="open-create-todo-btn" onClick={onShowCreateTask}>
         ✏️
       </button>
       <div>
@@ -340,7 +339,7 @@ function App() {
       <div
         id="add-task"
         className={showMoreCreateOptions ? "full-page" : null}
-        style={{ display: showCreateTask ? "block" : "none" }}
+        style={{ display: isCreateTodoShown ? "block" : "none" }}
       >
         <header>
           <button className="view-more-btn" onClick={onShowCreateMore}>
@@ -367,14 +366,23 @@ function App() {
               delSelectedTag={delSelectedTag}
             />
 
-            <input
-              onInput={writeTagText}
-              onFocus={onShowTagList}
+            <TagInput
+              savedTagList={savedTagList}
+              handleShowSavedTagList={handleShowSavedTagList}
+              tagInputValue={tagInputValue}
+              setTagInputValue={setTagInputValue}
+              setIsCreateTagBtnShown={setIsCreateTagBtnShown}
+              setTagsFilteredList={setTagsFilteredList}
+            />
+
+            {/* <input
+              onInput={updateTagInputValue}
+              onFocus={handleShowSavedTagList}
               // onBlur={showTagList}
               value={tagInputValue}
               type="text"
               placeholder="태그를 추가해주세요."
-            />
+            /> */}
 
             <div
               style={{ display: showTagList ? "block" : "none" }}
@@ -388,7 +396,7 @@ function App() {
                 {tagInputValue ? paintRelatedSavedTags() : paintSavedTags()}
                 <div
                   className="create-new-tag"
-                  style={{ display: tagCreateBtn ? "block" : "none" }}
+                  style={{ display: isCreateTagBtn ? "block" : "none" }}
                 >
                   <button>create</button>
                   <span className="tag">{tagInputValue}</span>
