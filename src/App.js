@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./reset.css";
 import "./App.css";
 import TaskStatusTabs from "./components/TaskStatusTabs.js";
+import TodoInput from "./components/TodoInput.js";
 import SelectedTagsList from "./components/SelectedTagsList";
 
 function App() {
@@ -82,17 +83,17 @@ function App() {
 
   const [showCreateTask, setShowCreateTask] = useState(false);
 
-  const [showCreateMore, setShowCreateMore] = useState(false);
+  const [showMoreCreateOptions, setShowMoreCreateOptions] = useState(false);
 
   const onCloseTaskCreate = () => {
-    setShowCreateMore(false);
+    setShowMoreCreateOptions(false);
     setShowCreateTask(false);
     setShowTagList(false);
     setSelectedTags([]);
   };
 
   const onShowCreateMore = () => {
-    setShowCreateMore((current) => !current);
+    setShowMoreCreateOptions((current) => !current);
     setShowTagList(false);
     setSelectedTags([]);
   };
@@ -263,14 +264,10 @@ function App() {
       setInputValue("");
       setTagInputValue("");
       setSelectedTags([]);
-      if (showCreateMore) {
-        setShowCreateMore(false);
+      if (showMoreCreateOptions) {
+        setShowMoreCreateOptions(false);
       }
     }
-  };
-
-  const keepTask = (e) => {
-    e.preventDefault();
   };
 
   const handleCompletion = (e) => {
@@ -342,12 +339,12 @@ function App() {
       </div>
       <div
         id="add-task"
-        className={showCreateMore ? "full-page" : null}
+        className={showMoreCreateOptions ? "full-page" : null}
         style={{ display: showCreateTask ? "block" : "none" }}
       >
         <header>
           <button className="view-more-btn" onClick={onShowCreateMore}>
-            {!showCreateMore ? "▼" : "▲"}
+            {!showMoreCreateOptions ? "▼" : "▲"}
           </button>
           <h2>할 일 생성 ✏️</h2>
           <button onClick={onCloseTaskCreate} className="add-task-close-btn">
@@ -355,19 +352,12 @@ function App() {
           </button>
         </header>
         <div className="input-container">
-          <form
-            className="todo-form"
-            onSubmit={showCreateMore ? keepTask : addNewTodoHandler}
-          >
-            <h3>Task</h3>
-            {/* <input
-              onChange={updateInputValue}
-              value={inputValue}
-              required
-              type="text"
-              placeholder="할 일을 입력해 주세요."
-            /> */}
-          </form>
+          <TodoInput
+            showMoreCreateOptions={showMoreCreateOptions}
+            addNewTodoHandler={addNewTodoHandler}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+          />
         </div>
         <div id="tag-select-container">
           <h3>Tags</h3>
@@ -408,7 +398,7 @@ function App() {
           </form>
         </div>
         <button
-          style={{ display: !showCreateMore ? "none" : "block" }}
+          style={{ display: !showMoreCreateOptions ? "none" : "block" }}
           onClick={addNewTodoHandler}
           className="add-task-btn"
         >

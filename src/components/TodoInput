@@ -1,9 +1,0 @@
-function renderTodoInput({}) {
-  <input
-    onChange={writeTodoText}
-    value={inputValue}
-    required
-    type="text"
-    placeholder="할 일을 입력해 주세요."
-  />;
-}
