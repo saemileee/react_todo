@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./reset.css";
 import "./App.css";
-import TodoStatusTabs from "./components/TodoStatusTabs.js";
+import TaskStatusTabs from "./components/TaskStatusTabs.js";
 
 function App() {
   const [allTodos, setAllTodos] = useState([]);
@@ -30,7 +30,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getTodos();
+    getTodoDB();
     setLoading(true);
   }, []);
 
@@ -71,13 +71,13 @@ function App() {
     );
   };
 
-  const getTodos = () => {
+  const getTodoDB = () => {
     setTodosForRender(JSON.parse(localStorage.getItem("allTodos")));
     setAllTodos(JSON.parse(localStorage.getItem("allTodos")));
     setSavedTagList(JSON.parse(localStorage.getItem("tagList")));
   };
 
-  const onClickTag = (e) => {
+  const handleTagClick = (e) => {
     setTodosForRender(
       todosForRender.filter(
         (todo) => todo.tags.filter((tag) => tag.id == e.target.id).length > 0
@@ -119,16 +119,16 @@ function App() {
         key={todo.id}
         id={todo.id}
       >
-        <button className="complete-btn" onClick={completeCheck}>
+        <button className="complete-btn" onClick={handleCompletion}>
           {!todo.isCompleted ? `🤔 미완료` : `😍 완료`}
         </button>
-        <button className="del-task-btn" onClick={deleteTodo}>
+        <button className="del-task-btn" onClick={handleDelete}>
           X
         </button>
         <p className="todo-content">{todo.content}</p>
         <div className="todo-tags">
           {todo.tags.map((tag) => (
-            <button id={tag.id} onClick={onClickTag} className="tag">
+            <button id={tag.id} onClick={handleTagClick} className="tag">
               {tag.value}{" "}
             </button>
           ))}
@@ -233,16 +233,16 @@ function App() {
     );
   };
 
-  const writeTodoText = (e) => {
+  const updateInputValue = (e) => {
     setInputValue(e.target.value);
   };
-  const addNewTodo = (e) => {
+  const addNewTodoHandler = (e) => {
     e.preventDefault();
-    const newID = new Date().getTime();
+    const newTodoId = new Date().getTime();
     if (inputValue != "") {
       setAllTodos([
         {
-          id: newID,
+          id: newTodoId,
           content: inputValue,
           isCompleted: false,
           tags: selectedTags,
@@ -252,7 +252,7 @@ function App() {
 
       setTodosForRender([
         {
-          id: newID,
+          id: newTodoId,
           content: inputValue,
           isCompleted: false,
           tags: selectedTags,
@@ -272,7 +272,7 @@ function App() {
     e.preventDefault();
   };
 
-  const completeCheck = (e) => {
+  const handleCompletion = (e) => {
     setTodosForRender(
       todosForRender.map((todoData) => {
         if (todoData.id == e.target.parentElement.id) {
@@ -292,7 +292,7 @@ function App() {
     );
   };
 
-  const deleteTodo = (e) => {
+  const handleDelete = (e) => {
     setTodosForRender(
       todosForRender.filter((data) => e.target.parentElement.id != data.id)
     );
@@ -321,7 +321,7 @@ function App() {
             <button onClick={allList}>X</button>
           </span>
         </div>
-        <TodoStatusTabs
+        <TaskStatusTabs
           showOption={showOption}
           handleSelectShowAll={handleSelectShowAll}
           handleSelectShowCompleted={handleSelectShowCompleted}
@@ -330,6 +330,7 @@ function App() {
           completedTodos={completedTodos}
           incompleteTodos={incompleteTodos}
         />
+
         <ul id="task-list">
           {showOption == "all"
             ? todosForRender.map((todo) => paintTodo(todo))
@@ -355,17 +356,16 @@ function App() {
         <div className="input-container">
           <form
             className="todo-form"
-            onSubmit={showCreateMore ? keepTask : addNewTodo}
+            onSubmit={showCreateMore ? keepTask : addNewTodoHandler}
           >
             <h3>Task</h3>
-            <input
-              onChange={writeTodoText}
+            {/* <input
+              onChange={updateInputValue}
               value={inputValue}
               required
               type="text"
               placeholder="할 일을 입력해 주세요."
-            />
-            {/* <button>추가</button> */}
+            /> */}
           </form>
         </div>
         <div id="tag-select-container">
@@ -406,7 +406,7 @@ function App() {
         </div>
         <button
           style={{ display: !showCreateMore ? "none" : "block" }}
-          onClick={addNewTodo}
+          onClick={addNewTodoHandler}
           className="add-task-btn"
         >
           추가

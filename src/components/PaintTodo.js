@@ -1,4 +1,6 @@
-function renderPaintTodo({ todo, tag, completeCheck, deleteTodo, onClickTag }) {
+import React from "react";
+
+function TodoItem({ todo, completeCheck, deleteTodo, onClickTag }) {
   return (
     <li
       className={todo.isCompleted ? "completed" : null}
@@ -23,4 +25,4 @@ function renderPaintTodo({ todo, tag, completeCheck, deleteTodo, onClickTag }) {
   );
 }
 
-export default renderPaintTodo;
+export default TodoItem;
