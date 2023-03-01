@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
-// import {
-//   Button,
-//   ListGroup,
-//   ListGroupItem,
-//   Form,
-//   InputGroup,
-//   Badge,
-// } from "react-bootstrap";
-
 import "./reset.css";
 import "./App.css";
+import Tabs from "./components/Tabs.js";
 
 function App() {
   const [ogTodoDB, setOGTodoDB] = useState([]);
@@ -320,27 +312,16 @@ function App() {
             <button onClick={allList}>X</button>
           </span>
         </div>
-        {/* 선택한 태그 명이 나오기 */}
-        <ul className="tab">
-          <li
-            className={showOption == "all" ? "selected" : null}
-            onClick={selectShowAllOption}
-          >
-            전체 <span>{todoDB.length}</span>
-          </li>
-          <li
-            className={showOption == "completed" ? "selected" : null}
-            onClick={selectShowCompletedOption}
-          >
-            완료 <span>{completedTodoDB.length}</span>
-          </li>
-          <li
-            className={showOption == "uncompleted" ? "selected" : null}
-            onClick={selectShowUncompletedOption}
-          >
-            미완료 <span>{uncompletedTodoDB.length}</span>
-          </li>
-        </ul>
+        <Tabs
+          showOption={showOption}
+          selectShowAllOption={selectShowAllOption}
+          selectShowCompletedOption={selectShowCompletedOption}
+          selectShowUncompletedOption={selectShowUncompletedOption}
+          todoDB={todoDB}
+          completedTodoDB={completedTodoDB}
+          uncompletedTodoDB={uncompletedTodoDB}
+        />
+
         <ul id="task-list">
           {showOption == "all"
             ? todoDB.map((todo) => paintTodo(todo))
