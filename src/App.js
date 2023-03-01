@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import "./reset.css";
 import "./App.css";
-import Tabs from "./components/Tabs.js";
+import TaskStatusTabs from "./components/TaskStatusTabs.js";
 
 function App() {
-  const [ogTodoDB, setOGTodoDB] = useState([]);
-  const [todoDB, setTodoDB] = useState([]);
+  const [allTodos, setAllTodos] = useState([]);
+  const [todosForRender, setTodosForRender] = useState([]);
   const [inputValue, setInputValue] = useState();
   const [selectedTags, setSelectedTags] = useState([]);
   const [savedTagList, setSavedTagList] = useState([]);
@@ -15,9 +15,13 @@ function App() {
   const [tagCreateBtn, setTagCreateBtn] = useState(false);
   const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
-  const completedTodoDB = todoDB.filter((todo) => todo.isCompleted == true);
+  const completedTodos = todosForRender.filter(
+    (todo) => todo.isCompleted == true
+  );
 
-  const uncompletedTodoDB = todoDB.filter((todo) => todo.isCompleted == false);
+  const incompleteTodos = todosForRender.filter(
+    (todo) => todo.isCompleted == false
+  );
 
   const [showOption, setShowOption] = useState("all");
 
@@ -35,9 +39,12 @@ function App() {
   }, [savedTagList]);
 
   useEffect(() => {
-    window.localStorage.setItem("todoDB", JSON.stringify(todoDB));
-    window.localStorage.setItem("ogTodoDB", JSON.stringify(ogTodoDB));
-  }, [todoDB, ogTodoDB]);
+    window.localStorage.setItem(
+      "todosForRender",
+      JSON.stringify(todosForRender)
+    );
+    window.localStorage.setItem("allTodos", JSON.stringify(allTodos));
+  }, [todosForRender, allTodos]);
 
   const paintSavedTags = () => {
     return savedTagList.map((tag) => (
@@ -65,14 +72,14 @@ function App() {
   };
 
   const getTodoDB = () => {
-    setTodoDB(JSON.parse(localStorage.getItem("ogTodoDB")));
-    setOGTodoDB(JSON.parse(localStorage.getItem("ogTodoDB")));
+    setTodosForRender(JSON.parse(localStorage.getItem("allTodos")));
+    setAllTodos(JSON.parse(localStorage.getItem("allTodos")));
     setSavedTagList(JSON.parse(localStorage.getItem("tagList")));
   };
 
   const onClickTag = (e) => {
-    setTodoDB(
-      todoDB.filter(
+    setTodosForRender(
+      todosForRender.filter(
         (todo) => todo.tags.filter((tag) => tag.id == e.target.id).length > 0
       )
     );
@@ -102,7 +109,7 @@ function App() {
 
   const allList = () => {
     setSelectedTagForSearch(null);
-    setTodoDB([...ogTodoDB]);
+    setTodosForRender([...allTodos]);
   };
 
   const paintTodo = (todo) => {
@@ -130,16 +137,16 @@ function App() {
     );
   };
 
-  const selectShowAllOption = () => {
+  const handleSelectShowAll = () => {
     setShowOption("all");
   };
 
-  const selectShowCompletedOption = () => {
+  const handleSelectShowCompleted = () => {
     setShowOption("completed");
   };
 
-  const selectShowUncompletedOption = () => {
-    setShowOption("uncompleted");
+  const handleSelectShowUncompleted = () => {
+    setShowOption("incompleted");
   };
 
   const onCloseTagList = () => {
@@ -233,24 +240,24 @@ function App() {
     e.preventDefault();
     const newID = new Date().getTime();
     if (inputValue != "") {
-      setOGTodoDB([
+      setAllTodos([
         {
           id: newID,
           content: inputValue,
           isCompleted: false,
           tags: selectedTags,
         },
-        ...ogTodoDB,
+        ...allTodos,
       ]);
 
-      setTodoDB([
+      setTodosForRender([
         {
           id: newID,
           content: inputValue,
           isCompleted: false,
           tags: selectedTags,
         },
-        ...todoDB,
+        ...todosForRender,
       ]);
       setInputValue("");
       setTagInputValue("");
@@ -266,8 +273,8 @@ function App() {
   };
 
   const completeCheck = (e) => {
-    setTodoDB(
-      todoDB.map((todoData) => {
+    setTodosForRender(
+      todosForRender.map((todoData) => {
         if (todoData.id == e.target.parentElement.id) {
           return { ...todoData, isCompleted: !todoData.isCompleted };
         }
@@ -275,8 +282,8 @@ function App() {
       })
     );
 
-    setOGTodoDB(
-      ogTodoDB.map((todoData) => {
+    setAllTodos(
+      allTodos.map((todoData) => {
         if (todoData.id == e.target.parentElement.id) {
           return { ...todoData, isCompleted: !todoData.isCompleted };
         }
@@ -286,9 +293,11 @@ function App() {
   };
 
   const deleteTodo = (e) => {
-    setTodoDB(todoDB.filter((data) => e.target.parentElement.id != data.id));
-    setOGTodoDB(
-      ogTodoDB.filter((data) => e.target.parentElement.id != data.id)
+    setTodosForRender(
+      todosForRender.filter((data) => e.target.parentElement.id != data.id)
+    );
+    setAllTodos(
+      allTodos.filter((data) => e.target.parentElement.id != data.id)
     );
   };
 
@@ -312,22 +321,22 @@ function App() {
             <button onClick={allList}>X</button>
           </span>
         </div>
-        <Tabs
+        <TaskStatusTabs
           showOption={showOption}
-          selectShowAllOption={selectShowAllOption}
-          selectShowCompletedOption={selectShowCompletedOption}
-          selectShowUncompletedOption={selectShowUncompletedOption}
-          todoDB={todoDB}
-          completedTodoDB={completedTodoDB}
-          uncompletedTodoDB={uncompletedTodoDB}
+          handleSelectShowAll={handleSelectShowAll}
+          handleSelectShowCompleted={handleSelectShowCompleted}
+          handleSelectShowUncompleted={handleSelectShowUncompleted}
+          todosForRender={todosForRender}
+          completedTodos={completedTodos}
+          incompleteTodos={incompleteTodos}
         />
 
         <ul id="task-list">
           {showOption == "all"
-            ? todoDB.map((todo) => paintTodo(todo))
+            ? todosForRender.map((todo) => paintTodo(todo))
             : showOption == "completed"
-            ? completedTodoDB.map((todo) => paintTodo(todo))
-            : uncompletedTodoDB.map((todo) => paintTodo(todo))}
+            ? completedTodos.map((todo) => paintTodo(todo))
+            : incompleteTodos.map((todo) => paintTodo(todo))}
         </ul>
       </div>
       <div
