@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./reset.css";
 import "./App.css";
 import TaskStatusTabs from "./components/TaskStatusTabs.js";
+import SelectedTagsList from "./components/SelectedTagsList";
 
 function App() {
   const [allTodos, setAllTodos] = useState([]);
@@ -49,7 +50,9 @@ function App() {
   const paintSavedTags = () => {
     return savedTagList.map((tag) => (
       <li id={tag.id} onClick={selectTag}>
-        <span className="tag">{tag.value}</span>
+        <span onClick={selectTag} className="tag">
+          {tag.value}
+        </span>
       </li>
     ));
   };
@@ -60,15 +63,6 @@ function App() {
         <span className="tag">{tag.value}</span>
       </li>
     ));
-  };
-
-  const paintSelectedTags = (tag) => {
-    return (
-      <button className="tag" id={tag.id}>
-        {tag.value}
-        <button onClick={delSelectedTag}>X</button>
-      </button>
-    );
   };
 
   const getTodoDB = () => {
@@ -215,16 +209,23 @@ function App() {
   };
 
   const selectTag = (e) => {
-    // e.preventDefault();
-    console.log(e.target.id);
-    if ([...selectedTags].filter((tag) => tag.id == e.target.id).length == 0) {
+    let selectedTagId = "";
+    if (e.target.localName == "span") {
+      selectedTagId = e.target.parentElement.id;
+    } else {
+      selectedTagId = e.target.id;
+    }
+
+    const existingTag = [...selectedTags].filter(
+      (tag) => tag.id == selectedTagId
+    );
+
+    if (existingTag.length == 0) {
       setSelectedTags([
         ...selectedTags,
-        ...savedTagList.filter((tag) => tag.id == e.target.id),
+        ...savedTagList.filter((tag) => tag.id == selectedTagId),
       ]);
     }
-    //저장된 태그리스트에서 태그를 눌렀을 때 아이디가 같은 것을 셀렉티드로 추가
-    // + 중복되는 리스트는 추가 안되게 수정해야함
   };
 
   const delSelectedTag = (e) => {
@@ -371,9 +372,11 @@ function App() {
         <div id="tag-select-container">
           <h3>Tags</h3>
           <form className="tag-input-form" onSubmit={createNewTag}>
-            <ul className="selected-tags-container">
-              {selectedTags.map((tag) => paintSelectedTags(tag))}
-            </ul>
+            <SelectedTagsList
+              selectedTags={selectedTags}
+              delSelectedTag={delSelectedTag}
+            />
+
             <input
               onInput={writeTagText}
               onFocus={onShowTagList}
