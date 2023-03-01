@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-
-function renderTaskTabs({
+function renderTodoTabs({
   showOption,
   handleSelectShowAll,
   handleSelectShowCompleted,
@@ -33,4 +31,4 @@ function renderTaskTabs({
   );
 }
 
-export default renderTaskTabs;
+export default renderTodoTabs;

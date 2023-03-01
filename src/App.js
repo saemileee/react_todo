@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./reset.css";
 import "./App.css";
-import TaskStatusTabs from "./components/TaskStatusTabs.js";
+import TodoStatusTabs from "./components/TodoStatusTabs.js";
 
 function App() {
   const [allTodos, setAllTodos] = useState([]);
@@ -30,7 +30,7 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getTodoDB();
+    getTodos();
     setLoading(true);
   }, []);
 
@@ -71,7 +71,7 @@ function App() {
     );
   };
 
-  const getTodoDB = () => {
+  const getTodos = () => {
     setTodosForRender(JSON.parse(localStorage.getItem("allTodos")));
     setAllTodos(JSON.parse(localStorage.getItem("allTodos")));
     setSavedTagList(JSON.parse(localStorage.getItem("tagList")));
@@ -321,7 +321,7 @@ function App() {
             <button onClick={allList}>X</button>
           </span>
         </div>
-        <TaskStatusTabs
+        <TodoStatusTabs
           showOption={showOption}
           handleSelectShowAll={handleSelectShowAll}
           handleSelectShowCompleted={handleSelectShowCompleted}
@@ -330,7 +330,6 @@ function App() {
           completedTodos={completedTodos}
           incompleteTodos={incompleteTodos}
         />
-
         <ul id="task-list">
           {showOption == "all"
             ? todosForRender.map((todo) => paintTodo(todo))
