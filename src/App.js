@@ -5,6 +5,7 @@ import TaskStatusTabs from "./components/TaskStatusTabs.js";
 import TodoInput from "./components/TodoInput.js";
 import SelectedTagsList from "./components/SelectedTagsList";
 import TagInput from "./components/TagInput";
+import SelectTagsPanel from "./components/SelectTagsPanel";
 import CreateTagPanel from "./components/CreateTagPanel.js";
 
 function App() {
@@ -16,9 +17,7 @@ function App() {
   const [savedTagList, setSavedTagList] = useState([]);
   const [newTag, setNewTag] = useState([]);
   const [tagInputValue, setTagInputValue] = useState();
-  const [showTagList, setIsSavedTagListShown] = useState(false);
-  const [isCreateTagBtnShown, setIsCreateTagBtnShown] = useState(false);
-  const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
+  const [isSavedTagListShown, setIsSavedTagListShown] = useState(false);
 
   const completedTodos = todosForRender.filter(
     (todo) => todo.isCompleted == true
@@ -50,24 +49,6 @@ function App() {
     );
     window.localStorage.setItem("allTodos", JSON.stringify(allTodos));
   }, [todosForRender, allTodos]);
-
-  const paintSavedTags = () => {
-    return savedTagList.map((tag) => (
-      <li id={tag.id} onClick={selectTagOnList}>
-        <span onClick={selectTagOnList} className="tag">
-          {tag.value}
-        </span>
-      </li>
-    ));
-  };
-
-  const paintRelatedSavedTags = () => {
-    return tagsFilteredList.map((tag) => (
-      <li id={tag.id} onClick={selectTagOnList}>
-        <span className="tag">{tag.value}</span>
-      </li>
-    ));
-  };
 
   const getTodoDB = () => {
     setTodosForRender(JSON.parse(localStorage.getItem("allTodos")));
@@ -147,81 +128,12 @@ function App() {
     setShowOption("incompleted");
   };
 
-  const onCloseTagList = () => {
+  const handleSavedTagListShown = () => {
     setIsSavedTagListShown(false);
   };
 
   const handleShowSavedTagList = () => {
     setIsSavedTagListShown(true);
-  };
-
-  const createOrSelectTag = (e) => {
-    e.preventDefault();
-    const text = tagInputValue.replaceAll(" ", "");
-    //InputText가 공백만 있는지 판단
-
-    const existingSelectedTag = [...selectedTags].filter(
-      (tag) => tag.value == tagInputValue
-    );
-    const existingSavedTag = [...savedTagList].filter(
-      (tag) => tag.value == tagInputValue
-    );
-
-    if (
-      text != "" &&
-      existingSelectedTag.length == 0 &&
-      existingSavedTag.length == 0
-    ) {
-      setSelectedTags([
-        ...selectedTags,
-        { id: new Date().getTime(), value: tagInputValue },
-      ]);
-      setSavedTagList([
-        ...savedTagList,
-        { id: new Date().getTime(), value: tagInputValue },
-      ]);
-    } else if (
-      text != "" &&
-      existingSelectedTag.length == 0 &&
-      existingSavedTag.length != 0
-    ) {
-      setSelectedTags([...selectedTags, ...existingSavedTag]);
-    }
-
-    setTagInputValue("");
-    setIsCreateTagBtnShown(false);
-    paintSavedTags();
-
-    // 저장된 value 값이 이미 저장된 taglist의 value 값하고 같은 경우 찾았따!
-    //1. 작성한 태그가 selectedTag, savedTagList에 없는 경우 << 새롭게 태그를 생성하고 selectedTag 리스트에 추가함
-
-    //2. 작성한 태그가 selectedTag에는 없고 savedTagList에 있는 경우 << 태그는 생성하지말고 selectedTag리스트에만 추가함
-  };
-
-  const selectTagOnList = (e) => {
-    let selectedTagId = "";
-    if (e.target.localName == "span") {
-      selectedTagId = e.target.parentElement.id;
-    } else {
-      selectedTagId = e.target.id;
-    }
-
-    const existingTag = [...selectedTags].filter(
-      (tag) => tag.id == selectedTagId
-    );
-
-    if (existingTag.length == 0) {
-      setSelectedTags([
-        ...selectedTags,
-        ...savedTagList.filter((tag) => tag.id == selectedTagId),
-      ]);
-    }
-  };
-
-  const delSelectedTag = (e) => {
-    setSelectedTags(
-      selectedTags.filter((tag) => e.target.parentElement.id != tag.id)
-    );
   };
 
   const addNewTodoHandler = (e) => {
@@ -306,6 +218,7 @@ function App() {
           </span>
         </div>
         <TaskStatusTabs
+          setTagInputValue={setTagInputValue}
           showOption={showOption}
           handleSelectShowAll={handleSelectShowAll}
           handleSelectShowCompleted={handleSelectShowCompleted}
@@ -347,7 +260,17 @@ function App() {
         </div>
         <div id="tag-select-container">
           <h3>Tags</h3>
-          <form className="tag-input-form" onSubmit={createOrSelectTag}>
+          <SelectTagsPanel
+            savedTagList={savedTagList}
+            setSavedTagList={setSavedTagList}
+            tagInputValue={tagInputValue}
+            selectedTags={selectedTags}
+            setSelectedTags={setSelectedTags}
+            handleSavedTagListShown={handleSavedTagListShown}
+            isSavedTagListShown={isSavedTagListShown}
+            handleShowSavedTagList={handleShowSavedTagList}
+          />
+          {/* <form className="tag-input-form" onSubmit={createOrSelectTag}>
             <SelectedTagsList
               selectedTags={selectedTags}
               delSelectedTag={delSelectedTag}
@@ -363,12 +286,12 @@ function App() {
             />
 
             <div
-              style={{ display: showTagList ? "block" : "none" }}
+              style={{ display: isSavedTagListShown ? "block" : "none" }}
               className="saved-tags-list"
             >
               <p>
                 태그를 선택하거나 생성해주세요.{" "}
-                <button onClick={onCloseTagList}>X</button>
+                <button onClick={handleSavedTagListShown}>X</button>
               </p>
               <ul>
                 {tagInputValue ? paintRelatedSavedTags() : paintSavedTags()}
@@ -378,7 +301,7 @@ function App() {
                 tagInputValue={tagInputValue}
               />
             </div>
-          </form>
+          </form> */}
         </div>
         <button
           style={{ display: !showMoreCreateOptions ? "none" : "block" }}
