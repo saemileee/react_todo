@@ -5,6 +5,7 @@ import TaskStatusTabs from "./components/TaskStatusTabs.js";
 import TodoInput from "./components/TodoInput.js";
 import SelectedTagsList from "./components/SelectedTagsList";
 import TagInput from "./components/TagInput";
+import CreateTagPanel from "./components/CreateTagPanel.js";
 
 function App() {
   const [allTodos, setAllTodos] = useState([]);
@@ -16,7 +17,7 @@ function App() {
   const [newTag, setNewTag] = useState([]);
   const [tagInputValue, setTagInputValue] = useState();
   const [showTagList, setIsSavedTagListShown] = useState(false);
-  const [isCreateTagBtn, setIsCreateTagBtnShown] = useState(false);
+  const [isCreateTagBtnShown, setIsCreateTagBtnShown] = useState(false);
   const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
   const completedTodos = todosForRender.filter(
@@ -52,8 +53,8 @@ function App() {
 
   const paintSavedTags = () => {
     return savedTagList.map((tag) => (
-      <li id={tag.id} onClick={selectTag}>
-        <span onClick={selectTag} className="tag">
+      <li id={tag.id} onClick={selectTagOnList}>
+        <span onClick={selectTagOnList} className="tag">
           {tag.value}
         </span>
       </li>
@@ -62,7 +63,7 @@ function App() {
 
   const paintRelatedSavedTags = () => {
     return tagsFilteredList.map((tag) => (
-      <li id={tag.id} onClick={selectTag}>
+      <li id={tag.id} onClick={selectTagOnList}>
         <span className="tag">{tag.value}</span>
       </li>
     ));
@@ -154,40 +155,22 @@ function App() {
     setIsSavedTagListShown(true);
   };
 
-  // const updateTagInputValue = (e) => {
-  //   setTagInputValue(e.target.value);
-  //   const text = e.target.value.replaceAll(" ", "");
-  //   if (
-  //     text !== "" &&
-  //     savedTagList.filter((tag) => tag.value == e.target.value).length == 0
-  //   ) {
-  //     setIsCreateTagBtnShown(true);
-  //   } else {
-  //     setIsCreateTagBtnShown(false);
-  //   }
-  //   setTagsFilteredList(
-  //     [...savedTagList].filter((tag) => tag.value.includes(e.target.value))
-  //   );
-  //   // console.log(e.target.value);
-  // };
-
-  //새 태그를 크리에이트하는 경우 = 1번의 경우
-  const createNewTag = (e) => {
+  const createOrSelectTag = (e) => {
     e.preventDefault();
     const text = tagInputValue.replaceAll(" ", "");
+    //InputText가 공백만 있는지 판단
 
-    // setNewTag({ id: new Date().getTime(), value: tagInputValue });
-    const selectedTagFiltered = [...selectedTags].filter(
+    const existingSelectedTag = [...selectedTags].filter(
       (tag) => tag.value == tagInputValue
     );
-    const savedTagListFiltered = [...savedTagList].filter(
+    const existingSavedTag = [...savedTagList].filter(
       (tag) => tag.value == tagInputValue
     );
 
     if (
       text != "" &&
-      selectedTagFiltered.length == 0 &&
-      savedTagListFiltered.length == 0
+      existingSelectedTag.length == 0 &&
+      existingSavedTag.length == 0
     ) {
       setSelectedTags([
         ...selectedTags,
@@ -197,21 +180,25 @@ function App() {
         ...savedTagList,
         { id: new Date().getTime(), value: tagInputValue },
       ]);
+    } else if (
+      text != "" &&
+      existingSelectedTag.length == 0 &&
+      existingSavedTag.length != 0
+    ) {
+      setSelectedTags([...selectedTags, ...existingSavedTag]);
     }
 
     setTagInputValue("");
     setIsCreateTagBtnShown(false);
     paintSavedTags();
-    // window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
 
     // 저장된 value 값이 이미 저장된 taglist의 value 값하고 같은 경우 찾았따!
-    //1. 작성한 태그가 selectedTag, savedTagList에 없는 경우
-    //2. 작성한 태그가 selectedTag에는 없고 savedTagList에 있는 경우
-    //3. 작성한 태그가 selectedTag에는 있고 savedTagList에 없는 경우
-    //4. 작성한 태그가 selectedTag, savedTagList 둘다 있는 경우
+    //1. 작성한 태그가 selectedTag, savedTagList에 없는 경우 << 새롭게 태그를 생성하고 selectedTag 리스트에 추가함
+
+    //2. 작성한 태그가 selectedTag에는 없고 savedTagList에 있는 경우 << 태그는 생성하지말고 selectedTag리스트에만 추가함
   };
 
-  const selectTag = (e) => {
+  const selectTagOnList = (e) => {
     let selectedTagId = "";
     if (e.target.localName == "span") {
       selectedTagId = e.target.parentElement.id;
@@ -360,7 +347,7 @@ function App() {
         </div>
         <div id="tag-select-container">
           <h3>Tags</h3>
-          <form className="tag-input-form" onSubmit={createNewTag}>
+          <form className="tag-input-form" onSubmit={createOrSelectTag}>
             <SelectedTagsList
               selectedTags={selectedTags}
               delSelectedTag={delSelectedTag}
@@ -375,15 +362,6 @@ function App() {
               setTagsFilteredList={setTagsFilteredList}
             />
 
-            {/* <input
-              onInput={updateTagInputValue}
-              onFocus={handleShowSavedTagList}
-              // onBlur={showTagList}
-              value={tagInputValue}
-              type="text"
-              placeholder="태그를 추가해주세요."
-            /> */}
-
             <div
               style={{ display: showTagList ? "block" : "none" }}
               className="saved-tags-list"
@@ -394,14 +372,11 @@ function App() {
               </p>
               <ul>
                 {tagInputValue ? paintRelatedSavedTags() : paintSavedTags()}
-                <div
-                  className="create-new-tag"
-                  style={{ display: isCreateTagBtn ? "block" : "none" }}
-                >
-                  <button>create</button>
-                  <span className="tag">{tagInputValue}</span>
-                </div>
               </ul>
+              <CreateTagPanel
+                isCreateTagBtnShown={isCreateTagBtnShown}
+                tagInputValue={tagInputValue}
+              />
             </div>
           </form>
         </div>

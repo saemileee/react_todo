@@ -17,10 +17,12 @@ function renderTagInput({
     } else {
       setIsCreateTagBtnShown(false);
     }
+    //input에 공백일 시 create 버튼 안뜨게하기
+
     setTagsFilteredList(
       [...savedTagList].filter((tag) => tag.value.includes(e.target.value))
     );
-    // console.log(e.target.value);
+    //타이핑하고 있는 태그와 일치하는 태그 리스트 세팅
   };
 
   return (
