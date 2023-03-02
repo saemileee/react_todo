@@ -11,7 +11,6 @@ function RenderSelectTagsPanel({
   handleSavedTagListShown,
   savedTagList,
   setSavedTagList,
-  handleShowSavedTagList,
 }) {
   const [tagInputValue, setTagInputValue] = useState();
 
@@ -114,8 +113,8 @@ function RenderSelectTagsPanel({
       />
 
       <TagInput
+        handleSavedTagListShown={handleSavedTagListShown}
         savedTagList={savedTagList}
-        handleShowSavedTagList={handleShowSavedTagList}
         tagInputValue={tagInputValue}
         setTagInputValue={setTagInputValue}
         setIsCreateTagBtnShown={setIsCreateTagBtnShown}

@@ -32,5 +32,4 @@ function renderTaskTabs({
     </ul>
   );
 }
-
 export default renderTaskTabs;

@@ -1,18 +1,31 @@
 import React, { useEffect, useState } from "react";
 import "./reset.css";
 import "./App.css";
-import TaskStatusTabs from "./components/TaskStatusTabs.js";
+// import TaskStatusTabs from "./components/TaskStatusTabs.js";
 import TodoInput from "./components/TodoInput.js";
 import SelectTagsPanel from "./components/tag/SelectTagsPanel.js";
 import CloseCreateTodo from "./components/CloseCreateTodoBtn.js";
 
+function Tab({ tabMode, setTabMode, title, count, mode }) {
+  const handleListTabOption = (e) => {
+    setTabMode(e.target.id);
+    if (tabMode == "all") {
+    }
+  };
+  return (
+    <li
+      id={mode}
+      className={tabMode == mode ? "selected" : ""}
+      onClick={handleListTabOption}
+    >
+      {title} <span id={mode}>{count}</span>
+    </li>
+  );
+}
+
 function App() {
   //로딩
   const [loading, setLoading] = useState(false);
-
-  const [allTodos, setAllTodos] = useState([]);
-  const [todosForRender, setTodosForRender] = useState([]);
-  const [inputValue, setInputValue] = useState();
 
   //태그 검색
   const [selectedTagForSearch, setSelectedTagForSearch] = useState(null);
@@ -24,11 +37,19 @@ function App() {
   const [isSavedTagListShown, setIsSavedTagListShown] = useState(false);
 
   //탭 선택
-  const [showOption, setShowOption] = useState("all");
+  const [tabMode, setTabMode] = useState("all");
 
   //투두 생성 오픈 여부
   const [isCreateTodoShown, setIsCreateTodoShown] = useState(false);
   const [isCreateOptionsShown, setIsCreateOptionsShown] = useState(false);
+
+  const [inputValue, setInputValue] = useState();
+
+  //전체 투두 리스트
+  const [allTodos, setAllTodos] = useState([]);
+
+  //태그 필터링 된 투두리스트
+  const [todosForRender, setTodosForRender] = useState([]);
 
   //투두완료 리스트
   const completedTodos = todosForRender.filter(
@@ -37,6 +58,14 @@ function App() {
   const incompleteTodos = todosForRender.filter(
     (todo) => todo.isCompleted == false
   );
+
+  //페인트 될 투두 리스트
+  // const [todosForPaint,setTodosForPaint] = useState([]);
+  // function handleTodosForPaint(){
+  //   if(tabMode=="all"){
+  //     setTodosForPaint()
+  //   }
+  // }
 
   useEffect(() => {
     getTodoDB();
@@ -59,15 +88,6 @@ function App() {
     setTodosForRender(JSON.parse(localStorage.getItem("allTodos")));
     setAllTodos(JSON.parse(localStorage.getItem("allTodos")));
     setSavedTagList(JSON.parse(localStorage.getItem("tagList")));
-  };
-
-  const handleTagClick = (e) => {
-    setTodosForRender(
-      todosForRender.filter(
-        (todo) => todo.tags.filter((tag) => tag.id == e.target.id).length > 0
-      )
-    );
-    setSelectedTagForSearch(e.target.childNodes[0].data);
   };
 
   const handleCreateTodoShown = () => {
@@ -98,6 +118,44 @@ function App() {
   };
 
   const paintTodo = (todo) => {
+    const handleCompletion = (e) => {
+      setTodosForRender(
+        todosForRender.map((todoData) => {
+          if (todoData.id == e.target.parentElement.id) {
+            return { ...todoData, isCompleted: !todoData.isCompleted };
+          }
+          return todoData;
+        })
+      );
+
+      setAllTodos(
+        allTodos.map((todoData) => {
+          if (todoData.id == e.target.parentElement.id) {
+            return { ...todoData, isCompleted: !todoData.isCompleted };
+          }
+          return todoData;
+        })
+      );
+    };
+
+    const handleDelete = (e) => {
+      setTodosForRender(
+        todosForRender.filter((data) => e.target.parentElement.id != data.id)
+      );
+      setAllTodos(
+        allTodos.filter((data) => e.target.parentElement.id != data.id)
+      );
+    };
+
+    const handleTagClick = (e) => {
+      setTodosForRender(
+        todosForRender.filter(
+          (todo) => todo.tags.filter((tag) => tag.id == e.target.id).length > 0
+        )
+      );
+      setSelectedTagForSearch(e.target.childNodes[0].data);
+    };
+
     return (
       <li
         className={todo.isCompleted ? "completed" : null}
@@ -122,24 +180,8 @@ function App() {
     );
   };
 
-  const handleSelectShowAll = () => {
-    setShowOption("all");
-  };
-
-  const handleSelectShowCompleted = () => {
-    setShowOption("completed");
-  };
-
-  const handleSelectShowUncompleted = () => {
-    setShowOption("incompleted");
-  };
-
   const handleSavedTagListShown = () => {
-    setIsSavedTagListShown(false);
-  };
-
-  const handleShowSavedTagList = () => {
-    setIsSavedTagListShown(true);
+    setIsSavedTagListShown((current) => !current);
   };
 
   const addNewTodoHandler = (e) => {
@@ -174,35 +216,6 @@ function App() {
     }
   };
 
-  const handleCompletion = (e) => {
-    setTodosForRender(
-      todosForRender.map((todoData) => {
-        if (todoData.id == e.target.parentElement.id) {
-          return { ...todoData, isCompleted: !todoData.isCompleted };
-        }
-        return todoData;
-      })
-    );
-
-    setAllTodos(
-      allTodos.map((todoData) => {
-        if (todoData.id == e.target.parentElement.id) {
-          return { ...todoData, isCompleted: !todoData.isCompleted };
-        }
-        return todoData;
-      })
-    );
-  };
-
-  const handleDelete = (e) => {
-    setTodosForRender(
-      todosForRender.filter((data) => e.target.parentElement.id != data.id)
-    );
-    setAllTodos(
-      allTodos.filter((data) => e.target.parentElement.id != data.id)
-    );
-  };
-
   return (
     <div className="wrap">
       <h1>
@@ -223,21 +236,35 @@ function App() {
             <button onClick={allList}>X</button>
           </span>
         </div>
-        <TaskStatusTabs
-          setTagInputValue={setTagInputValue}
-          showOption={showOption}
-          handleSelectShowAll={handleSelectShowAll}
-          handleSelectShowCompleted={handleSelectShowCompleted}
-          handleSelectShowUncompleted={handleSelectShowUncompleted}
-          todosForRender={todosForRender}
-          completedTodos={completedTodos}
-          incompleteTodos={incompleteTodos}
-        />
+        <ul className="tab">
+          <Tab
+            tabMode={tabMode}
+            setTabMode={setTabMode}
+            title={"전체"}
+            count={todosForRender.length}
+            mode={"all"}
+          />
+          <Tab
+            tabMode={tabMode}
+            setTabMode={setTabMode}
+            title={"완료"}
+            count={completedTodos.length}
+            mode={"completed"}
+          />
+          <Tab
+            tabMode={tabMode}
+            setTabMode={setTabMode}
+            title={"미완료"}
+            count={incompleteTodos.length}
+            mode={"incompleted"}
+          />
+        </ul>
 
         <ul id="task-list">
-          {showOption == "all"
+          {/* {todosForPaint.map((todo) => paintTodo(todo))} */}
+          {tabMode == "all"
             ? todosForRender.map((todo) => paintTodo(todo))
-            : showOption == "completed"
+            : tabMode == "completed"
             ? completedTodos.map((todo) => paintTodo(todo))
             : incompleteTodos.map((todo) => paintTodo(todo))}
         </ul>
@@ -252,13 +279,13 @@ function App() {
             {!isCreateOptionsShown ? "▼" : "▲"}
           </button>
           <h2>할 일 생성 ✏️</h2>
-          <CloseCreateTodo />
-          {/* <button
+          {/* <CloseCreateTodo /> */}
+          <button
             onClick={handleCreateTodoShown}
             className="create-todo-close-btn"
           >
             X
-          </button> */}
+          </button>
         </header>
         <div className="input-container">
           <TodoInput
@@ -278,7 +305,6 @@ function App() {
             setSelectedTags={setSelectedTags}
             handleSavedTagListShown={handleSavedTagListShown}
             isSavedTagListShown={isSavedTagListShown}
-            handleShowSavedTagList={handleShowSavedTagList}
           />
         </div>
         <button

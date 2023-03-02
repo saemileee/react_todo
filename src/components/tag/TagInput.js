@@ -1,5 +1,5 @@
 function renderTagInput({
-  handleShowSavedTagList,
+  handleSavedTagListShown,
   tagInputValue,
   setTagInputValue,
   setIsCreateTagBtnShown,
@@ -28,7 +28,7 @@ function renderTagInput({
   return (
     <input
       onInput={updateTagInputValue}
-      onFocus={handleShowSavedTagList}
+      onFocus={handleSavedTagListShown}
       // onBlur={showTagList}
       value={tagInputValue}
       type="text"
