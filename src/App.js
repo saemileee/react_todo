@@ -1,37 +1,42 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./reset.css";
 import "./App.css";
 import TaskStatusTabs from "./components/TaskStatusTabs.js";
 import TodoInput from "./components/TodoInput.js";
-import SelectedTagsList from "./components/SelectedTagsList";
-import TagInput from "./components/TagInput";
-import SelectTagsPanel from "./components/SelectTagsPanel";
-import CreateTagPanel from "./components/CreateTagPanel.js";
+import SelectTagsPanel from "./components/tag/SelectTagsPanel.js";
+import CloseCreateTodo from "./components/CloseCreateTodoBtn.js";
 
 function App() {
+  //로딩
+  const [loading, setLoading] = useState(false);
+
   const [allTodos, setAllTodos] = useState([]);
   const [todosForRender, setTodosForRender] = useState([]);
   const [inputValue, setInputValue] = useState();
 
+  //태그 검색
+  const [selectedTagForSearch, setSelectedTagForSearch] = useState(null);
+
+  //태그
+  const [tagInputValue, setTagInputValue] = useState();
   const [selectedTags, setSelectedTags] = useState([]);
   const [savedTagList, setSavedTagList] = useState([]);
-  const [newTag, setNewTag] = useState([]);
-  const [tagInputValue, setTagInputValue] = useState();
   const [isSavedTagListShown, setIsSavedTagListShown] = useState(false);
 
+  //탭 선택
+  const [showOption, setShowOption] = useState("all");
+
+  //투두 생성 오픈 여부
+  const [isCreateTodoShown, setIsCreateTodoShown] = useState(false);
+  const [isCreateOptionsShown, setIsCreateOptionsShown] = useState(false);
+
+  //투두완료 리스트
   const completedTodos = todosForRender.filter(
     (todo) => todo.isCompleted == true
   );
-
   const incompleteTodos = todosForRender.filter(
     (todo) => todo.isCompleted == false
   );
-
-  const [showOption, setShowOption] = useState("all");
-
-  const [selectedTagForSearch, setSelectedTagForSearch] = useState(null);
-
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getTodoDB();
@@ -65,25 +70,26 @@ function App() {
     setSelectedTagForSearch(e.target.childNodes[0].data);
   };
 
-  const [isCreateTodoShown, setIsCreateTodoShown] = useState(false);
-
-  const [showMoreCreateOptions, setShowMoreCreateOptions] = useState(false);
-
-  const onCloseTaskCreate = () => {
-    setShowMoreCreateOptions(false);
-    setIsCreateTodoShown(false);
-    setIsSavedTagListShown(false);
-    setSelectedTags([]);
+  const handleCreateTodoShown = () => {
+    setIsCreateTodoShown((current) => !current);
+    if (!isCreateTodoShown) {
+      setIsCreateOptionsShown(false);
+      setIsSavedTagListShown(false);
+      setSelectedTags([]);
+    }
   };
 
-  const onShowCreateMore = () => {
-    setShowMoreCreateOptions((current) => !current);
+  // const handleCreateTodoShown = () => {
+  //   setIsCreateOptionsShown(false);
+  //   setIsCreateTodoShown((current)=>(!current));
+  //   setIsSavedTagListShown(false);
+  //   setSelectedTags([]);
+  // };
+
+  const handleCreateOptionShown = () => {
+    setIsCreateOptionsShown((current) => !current);
     setIsSavedTagListShown(false);
     setSelectedTags([]);
-  };
-
-  const onShowCreateTask = () => {
-    setIsCreateTodoShown(true);
   };
 
   const allList = () => {
@@ -162,8 +168,8 @@ function App() {
       setInputValue("");
       setTagInputValue("");
       setSelectedTags([]);
-      if (showMoreCreateOptions) {
-        setShowMoreCreateOptions(false);
+      if (isCreateOptionsShown) {
+        setIsCreateOptionsShown(false);
       }
     }
   };
@@ -203,7 +209,7 @@ function App() {
         Manage
         <br /> your tasks✏️
       </h1>
-      <button id="open-create-todo-btn" onClick={onShowCreateTask}>
+      <button id="open-create-todo-btn" onClick={handleCreateTodoShown}>
         ✏️
       </button>
       <div>
@@ -238,21 +244,25 @@ function App() {
       </div>
       <div
         id="add-task"
-        className={showMoreCreateOptions ? "full-page" : null}
+        className={isCreateOptionsShown ? "full-page" : null}
         style={{ display: isCreateTodoShown ? "block" : "none" }}
       >
         <header>
-          <button className="view-more-btn" onClick={onShowCreateMore}>
-            {!showMoreCreateOptions ? "▼" : "▲"}
+          <button className="view-more-btn" onClick={handleCreateOptionShown}>
+            {!isCreateOptionsShown ? "▼" : "▲"}
           </button>
           <h2>할 일 생성 ✏️</h2>
-          <button onClick={onCloseTaskCreate} className="add-task-close-btn">
+          <CloseCreateTodo />
+          {/* <button
+            onClick={handleCreateTodoShown}
+            className="create-todo-close-btn"
+          >
             X
-          </button>
+          </button> */}
         </header>
         <div className="input-container">
           <TodoInput
-            showMoreCreateOptions={showMoreCreateOptions}
+            isCreateOptionsShown={isCreateOptionsShown}
             addNewTodoHandler={addNewTodoHandler}
             inputValue={inputValue}
             setInputValue={setInputValue}
@@ -270,41 +280,9 @@ function App() {
             isSavedTagListShown={isSavedTagListShown}
             handleShowSavedTagList={handleShowSavedTagList}
           />
-          {/* <form className="tag-input-form" onSubmit={createOrSelectTag}>
-            <SelectedTagsList
-              selectedTags={selectedTags}
-              delSelectedTag={delSelectedTag}
-            />
-
-            <TagInput
-              savedTagList={savedTagList}
-              handleShowSavedTagList={handleShowSavedTagList}
-              tagInputValue={tagInputValue}
-              setTagInputValue={setTagInputValue}
-              setIsCreateTagBtnShown={setIsCreateTagBtnShown}
-              setTagsFilteredList={setTagsFilteredList}
-            />
-
-            <div
-              style={{ display: isSavedTagListShown ? "block" : "none" }}
-              className="saved-tags-list"
-            >
-              <p>
-                태그를 선택하거나 생성해주세요.{" "}
-                <button onClick={handleSavedTagListShown}>X</button>
-              </p>
-              <ul>
-                {tagInputValue ? paintRelatedSavedTags() : paintSavedTags()}
-              </ul>
-              <CreateTagPanel
-                isCreateTagBtnShown={isCreateTagBtnShown}
-                tagInputValue={tagInputValue}
-              />
-            </div>
-          </form> */}
         </div>
         <button
-          style={{ display: !showMoreCreateOptions ? "none" : "block" }}
+          style={{ display: !isCreateOptionsShown ? "none" : "block" }}
           onClick={addNewTodoHandler}
           className="add-task-btn"
         >
