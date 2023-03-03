@@ -1,27 +1,38 @@
 import React, { useEffect, useState } from "react";
 import "./reset.css";
 import "./App.css";
-// import TaskStatusTabs from "./components/TaskStatusTabs.js";
 import TodoInput from "./components/TodoInput.js";
 import SelectTagsPanel from "./components/tag/SelectTagsPanel.js";
-import CloseCreateTodo from "./components/CloseCreateTodoBtn.js";
+import Tab from "./components/Tab.js";
 
-function Tab({ tabMode, setTabMode, title, count, mode }) {
-  const handleListTabOption = (e) => {
-    setTabMode(e.target.id);
-    if (tabMode == "all") {
-    }
-  };
-  return (
-    <li
-      id={mode}
-      className={tabMode == mode ? "selected" : ""}
-      onClick={handleListTabOption}
-    >
-      {title} <span id={mode}>{count}</span>
-    </li>
-  );
-}
+// function TabPanel(tabMode, todosForRender, completedTodos, incompleteTodos) {
+//   console.log(completedTodos);
+//   return (
+//     <ul className="tab">
+//       <Tab
+//         tabMode={tabMode}
+//         setTabMode={tabMode[1]}
+//         title={"전체"}
+//         count={{ todosForRender }.length}
+//         mode={"all"}
+//       />
+//       <Tab
+//         tabMode={tabMode}
+//         setTabMode={tabMode[1]}
+//         title={"완료"}
+//         count={{ completedTodos }.length}
+//         mode={"completed"}
+//       />
+//       <Tab
+//         tabMode={tabMode}
+//         setTabMode={tabMode[1]}
+//         title={"미완료"}
+//         count={{ incompleteTodos }.length}
+//         mode={"incompleted"}
+//       />
+//     </ul>
+//   );
+// }
 
 function App() {
   //로딩
@@ -236,6 +247,13 @@ function App() {
             <button onClick={allList}>X</button>
           </span>
         </div>
+        {/* <TabPanel
+          tabMode={[tabMode, setTabMode]}
+          // setTabMode={setTabMode}
+          todosForRender={todosForRender}
+          completedTodos={completedTodos}
+          incompleteTodos={incompleteTodos}
+        /> */}
         <ul className="tab">
           <Tab
             tabMode={tabMode}
