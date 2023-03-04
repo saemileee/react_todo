@@ -3,36 +3,7 @@ import "./reset.css";
 import "./App.css";
 import TodoInput from "./components/TodoInput.js";
 import SelectTagsPanel from "./components/tag/SelectTagsPanel.js";
-import Tab from "./components/Tab.js";
-
-// function TabPanel(tabMode, todosForRender, completedTodos, incompleteTodos) {
-//   console.log(completedTodos);
-//   return (
-//     <ul className="tab">
-//       <Tab
-//         tabMode={tabMode}
-//         setTabMode={tabMode[1]}
-//         title={"전체"}
-//         count={{ todosForRender }.length}
-//         mode={"all"}
-//       />
-//       <Tab
-//         tabMode={tabMode}
-//         setTabMode={tabMode[1]}
-//         title={"완료"}
-//         count={{ completedTodos }.length}
-//         mode={"completed"}
-//       />
-//       <Tab
-//         tabMode={tabMode}
-//         setTabMode={tabMode[1]}
-//         title={"미완료"}
-//         count={{ incompleteTodos }.length}
-//         mode={"incompleted"}
-//       />
-//     </ul>
-//   );
-// }
+import TabPanel from "./components/TabPanel.js";
 
 function App() {
   //로딩
@@ -109,7 +80,6 @@ function App() {
       setSelectedTags([]);
     }
   };
-
   // const handleCreateTodoShown = () => {
   //   setIsCreateOptionsShown(false);
   //   setIsCreateTodoShown((current)=>(!current));
@@ -247,36 +217,13 @@ function App() {
             <button onClick={allList}>X</button>
           </span>
         </div>
-        {/* <TabPanel
-          tabMode={[tabMode, setTabMode]}
-          // setTabMode={setTabMode}
+        <TabPanel
+          setTabMode={setTabMode}
           todosForRender={todosForRender}
           completedTodos={completedTodos}
           incompleteTodos={incompleteTodos}
-        /> */}
-        <ul className="tab">
-          <Tab
-            tabMode={tabMode}
-            setTabMode={setTabMode}
-            title={"전체"}
-            count={todosForRender.length}
-            mode={"all"}
-          />
-          <Tab
-            tabMode={tabMode}
-            setTabMode={setTabMode}
-            title={"완료"}
-            count={completedTodos.length}
-            mode={"completed"}
-          />
-          <Tab
-            tabMode={tabMode}
-            setTabMode={setTabMode}
-            title={"미완료"}
-            count={incompleteTodos.length}
-            mode={"incompleted"}
-          />
-        </ul>
+          tabMode={tabMode}
+        />
 
         <ul id="task-list">
           {/* {todosForPaint.map((todo) => paintTodo(todo))} */}
