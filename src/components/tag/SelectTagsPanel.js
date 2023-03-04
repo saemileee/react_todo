@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-
 import SelectedTagsList from "./SelectedTagsList.js";
 import TagInput from "./TagInput.js";
 import CreateTagPanel from "./CreateTagPanel.js";
+import CloseBtn from "../../CloseBtn.js";
+import PaintTagList from "./PaintTagList.js";
 
 function RenderSelectTagsPanel({
   selectedTags,
@@ -17,24 +18,6 @@ function RenderSelectTagsPanel({
   const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
   const [isCreateTagBtnShown, setIsCreateTagBtnShown] = useState(false);
-
-  const paintSavedTags = () => {
-    return savedTagList.map((tag) => (
-      <li id={tag.id} onClick={selectTagOnList}>
-        <span onClick={selectTagOnList} className="tag">
-          {tag.value}
-        </span>
-      </li>
-    ));
-  };
-
-  const paintRelatedSavedTags = () => {
-    return tagsFilteredList.map((tag) => (
-      <li id={tag.id} onClick={selectTagOnList}>
-        <span className="tag">{tag.value}</span>
-      </li>
-    ));
-  };
 
   const selectTagOnList = (e) => {
     let selectedTagId = "";
@@ -91,7 +74,8 @@ function RenderSelectTagsPanel({
 
     setTagInputValue("");
     setIsCreateTagBtnShown(false);
-    paintSavedTags();
+
+    // paintSavedTags();
 
     // 저장된 value 값이 이미 저장된 taglist의 value 값하고 같은 경우 찾았따!
     //1. 작성한 태그가 selectedTag, savedTagList에 없는 경우 << 새롭게 태그를 생성하고 selectedTag 리스트에 추가함
@@ -127,9 +111,13 @@ function RenderSelectTagsPanel({
       >
         <p>
           태그를 선택하거나 생성해주세요.{" "}
-          <button onClick={handleSavedTagListShown}>X</button>
+          <CloseBtn handleComponentClose={handleSavedTagListShown} />
         </p>
-        <ul>{tagInputValue ? paintRelatedSavedTags() : paintSavedTags()}</ul>
+        <PaintTagList
+          tagInputValue={tagInputValue}
+          tagList={tagInputValue.length > 0 ? tagsFilteredList : savedTagList}
+          selectTagOnList={selectTagOnList}
+        />
         <CreateTagPanel
           isCreateTagBtnShown={isCreateTagBtnShown}
           tagInputValue={tagInputValue}

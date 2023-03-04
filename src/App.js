@@ -3,6 +3,7 @@ import "./reset.css";
 import "./App.css";
 import TodoInput from "./components/TodoInput.js";
 import SelectTagsPanel from "./components/tag/SelectTagsPanel.js";
+import TodoCreateHeader from "./TodoCreateHeader.js";
 import TabPanel from "./components/TabPanel.js";
 import TodoAddBtn from "./components/TodoAddBtn.js";
 
@@ -240,19 +241,11 @@ function App() {
         className={isCreateOptionsShown ? "full-page" : null}
         style={{ display: isCreateTodoShown ? "block" : "none" }}
       >
-        <header>
-          <button className="view-more-btn" onClick={handleCreateOptionShown}>
-            {!isCreateOptionsShown ? "▼" : "▲"}
-          </button>
-          <h2>할 일 생성 ✏️</h2>
-          {/* <CloseCreateTodo /> */}
-          <button
-            onClick={handleCreateTodoShown}
-            className="create-todo-close-btn"
-          >
-            X
-          </button>
-        </header>
+        <TodoCreateHeader
+          handleCreateOptionShown={handleCreateOptionShown}
+          isCreateOptionsShown={isCreateOptionsShown}
+          handleCreateTodoShown={handleCreateTodoShown}
+        />
         <div className="input-container">
           <TodoInput
             isCreateOptionsShown={isCreateOptionsShown}
@@ -278,13 +271,6 @@ function App() {
           isCreateOptionsShown={isCreateOptionsShown}
           addNewTodoHandler={addNewTodoHandler}
         />
-        {/* <button
-          style={{ display: !isCreateOptionsShown ? "none" : "block" }}
-          onClick={addNewTodoHandler}
-          className="add-task-btn"
-        >
-          추가
-        </button> */}
       </div>
     </div>
   );
