@@ -1,4 +1,6 @@
-function renderTodoInput({
+import TextInput from "./TextInput.js";
+
+function TodoInput({
   showMoreCreateOptions,
   addNewTodoHandler,
   inputValue,
@@ -18,15 +20,14 @@ function renderTodoInput({
       onSubmit={showMoreCreateOptions ? preventRunning : addNewTodoHandler}
     >
       <h3>Task</h3>
-      <input
-        onChange={updateInputValue}
+      <TextInput
+        onInput={updateInputValue}
+        onFocus={null}
         value={inputValue}
-        required
-        type="text"
         placeholder="할 일을 입력해 주세요."
       />
     </form>
   );
 }
 
-export default renderTodoInput;
+export default TodoInput;

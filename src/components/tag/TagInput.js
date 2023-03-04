@@ -1,4 +1,6 @@
-function renderTagInput({
+import TextInput from "../TextInput.js";
+
+function TagInput({
   handleSavedTagListShown,
   tagInputValue,
   setTagInputValue,
@@ -26,10 +28,9 @@ function renderTagInput({
   };
 
   return (
-    <input
+    <TextInput
       onInput={updateTagInputValue}
       onFocus={handleSavedTagListShown}
-      // onBlur={showTagList}
       value={tagInputValue}
       type="text"
       placeholder="태그를 추가해주세요."
@@ -37,4 +38,4 @@ function renderTagInput({
   );
 }
 
-export default renderTagInput;
+export default TagInput;

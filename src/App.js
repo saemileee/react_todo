@@ -4,6 +4,7 @@ import "./App.css";
 import TodoInput from "./components/TodoInput.js";
 import SelectTagsPanel from "./components/tag/SelectTagsPanel.js";
 import TabPanel from "./components/TabPanel.js";
+import TodoAddBtn from "./components/TodoAddBtn.js";
 
 function App() {
   //로딩
@@ -272,13 +273,18 @@ function App() {
             isSavedTagListShown={isSavedTagListShown}
           />
         </div>
-        <button
+        <TodoAddBtn
+          value="추가"
+          isCreateOptionsShown={isCreateOptionsShown}
+          addNewTodoHandler={addNewTodoHandler}
+        />
+        {/* <button
           style={{ display: !isCreateOptionsShown ? "none" : "block" }}
           onClick={addNewTodoHandler}
           className="add-task-btn"
         >
           추가
-        </button>
+        </button> */}
       </div>
     </div>
   );

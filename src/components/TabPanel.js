@@ -22,7 +22,6 @@ function TabPanel({
   tabMode,
   incompleteTodos,
 }) {
-  console.log(todosForRender);
   return (
     <ul className="tab">
       <Tab
