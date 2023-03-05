@@ -1,5 +1,5 @@
 import CreateTagPanel from "./CreateTagPanel.js";
-import CloseBtn from "../../CloseBtn.js";
+import CloseBtn from "../CloseBtn.js";
 import PaintTagList from "./PaintTagList.js";
 
 function TagSelector({

@@ -5,6 +5,7 @@ import TabPanel from "./components/TabPanel.js";
 
 import PaintTodoList from "./components/PaintTodo.js";
 import CreateTodo from "./components/CreateTodo.js";
+import Filter from "./components/Filter.js";
 
 function App() {
   //로딩
@@ -68,16 +69,7 @@ function App() {
         <br /> your tasks✏️
       </h1>
       <div>
-        <div
-          className="tag-search-result"
-          style={{ display: selectedTagForSearch == null ? "none" : "block" }}
-        >
-          <span>필터: </span>
-          <button className="tag">
-            {selectedTagForSearch}
-            <span onClick={allList}>X</span>
-          </button>
-        </div>
+        <Filter allList={allList} selectedTagForSearch={selectedTagForSearch} />
         <TabPanel
           setTabMode={setTabMode}
           todosForRender={todosForRender}
