@@ -188,16 +188,17 @@ body h1 {
   margin-bottom: 4px;
 }
 
-.tag button {
+.tag span {
   margin-left: 6px;
-  padding: 1px;
+  padding: 2px;
   border: none;
   width: 18px;
   height: 18px;
-  border-radius: 6px;
+  border-radius: 3px;
   text-align: center;
   font-size: 12px;
   color: #7f7f7f;
+  background-color: rgb(255, 255, 255);
 }
 
 /* add todo */

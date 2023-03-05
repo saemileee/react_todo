@@ -1,14 +1,20 @@
-function renderSelectedTagsList({ selectedTags, delSelectedTag }) {
+function SelectedTagsList({ selectedTags, setSelectedTags }) {
+  const delSelectedTag = (e) => {
+    setSelectedTags(
+      selectedTags.filter((tag) => e.target.parentElement.id != tag.id)
+    );
+  };
+
   return (
     <ul className="selected-tags-container">
       {selectedTags.map((tag) => (
-        <button className="tag" id={tag.id}>
+        <button key={tag.id} className="tag" id={tag.id}>
           {tag.value}
-          <button onClick={delSelectedTag}>X</button>
+          <span onClick={delSelectedTag}>X</span>
         </button>
       ))}
     </ul>
   );
 }
 
-export default renderSelectedTagsList;
+export default SelectedTagsList;

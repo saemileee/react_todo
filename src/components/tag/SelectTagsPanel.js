@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SelectedTagsList from "./SelectedTagsList.js";
 import TagInput from "./TagInput.js";
-import CreateTagPanel from "./CreateTagPanel.js";
-import CloseBtn from "../../CloseBtn.js";
-import PaintTagList from "./PaintTagList.js";
-
+import TagSelector from "./TagSelector.js";
 function RenderSelectTagsPanel({
   selectedTags,
   setSelectedTags,
@@ -18,84 +15,12 @@ function RenderSelectTagsPanel({
   const [tagsFilteredList, setTagsFilteredList] = useState(savedTagList);
 
   const [isCreateTagBtnShown, setIsCreateTagBtnShown] = useState(false);
-
-  const selectTagOnList = (e) => {
-    let selectedTagId = "";
-    if (e.target.localName == "span") {
-      selectedTagId = e.target.parentElement.id;
-    } else {
-      selectedTagId = e.target.id;
-    }
-
-    const existingTag = [...selectedTags].filter(
-      (tag) => tag.id == selectedTagId
-    );
-
-    if (existingTag.length == 0) {
-      setSelectedTags([
-        ...selectedTags,
-        ...savedTagList.filter((tag) => tag.id == selectedTagId),
-      ]);
-    }
-  };
-
-  const createOrSelectTag = (e) => {
-    e.preventDefault();
-    const text = tagInputValue.replaceAll(" ", "");
-    //InputText가 공백만 있는지 판단
-
-    const existingSelectedTag = [...selectedTags].filter(
-      (tag) => tag.value == tagInputValue
-    );
-    const existingSavedTag = [...savedTagList].filter(
-      (tag) => tag.value == tagInputValue
-    );
-
-    if (
-      text != "" &&
-      existingSelectedTag.length == 0 &&
-      existingSavedTag.length == 0
-    ) {
-      setSelectedTags([
-        ...selectedTags,
-        { id: new Date().getTime(), value: tagInputValue },
-      ]);
-      setSavedTagList([
-        ...savedTagList,
-        { id: new Date().getTime(), value: tagInputValue },
-      ]);
-    } else if (
-      text != "" &&
-      existingSelectedTag.length == 0 &&
-      existingSavedTag.length != 0
-    ) {
-      setSelectedTags([...selectedTags, ...existingSavedTag]);
-    }
-
-    setTagInputValue("");
-    setIsCreateTagBtnShown(false);
-
-    // paintSavedTags();
-
-    // 저장된 value 값이 이미 저장된 taglist의 value 값하고 같은 경우 찾았따!
-    //1. 작성한 태그가 selectedTag, savedTagList에 없는 경우 << 새롭게 태그를 생성하고 selectedTag 리스트에 추가함
-
-    //2. 작성한 태그가 selectedTag에는 없고 savedTagList에 있는 경우 << 태그는 생성하지말고 selectedTag리스트에만 추가함
-  };
-
-  const delSelectedTag = (e) => {
-    setSelectedTags(
-      selectedTags.filter((tag) => e.target.parentElement.id != tag.id)
-    );
-  };
-
   return (
-    <form className="tag-input-form" onSubmit={createOrSelectTag}>
+    <div>
       <SelectedTagsList
         selectedTags={selectedTags}
-        delSelectedTag={delSelectedTag}
+        setSelectedTags={setSelectedTags}
       />
-
       <TagInput
         handleSavedTagListShown={handleSavedTagListShown}
         savedTagList={savedTagList}
@@ -103,27 +28,21 @@ function RenderSelectTagsPanel({
         setTagInputValue={setTagInputValue}
         setIsCreateTagBtnShown={setIsCreateTagBtnShown}
         setTagsFilteredList={setTagsFilteredList}
+        selectedTags={selectedTags}
+        setSelectedTags={setSelectedTags}
+        setSavedTagList={setSavedTagList}
       />
-
-      <div
-        style={{ display: isSavedTagListShown ? "block" : "none" }}
-        className="saved-tags-list"
-      >
-        <p>
-          태그를 선택하거나 생성해주세요.{" "}
-          <CloseBtn handleComponentClose={handleSavedTagListShown} />
-        </p>
-        <PaintTagList
-          tagInputValue={tagInputValue}
-          tagList={tagInputValue.length > 0 ? tagsFilteredList : savedTagList}
-          selectTagOnList={selectTagOnList}
-        />
-        <CreateTagPanel
-          isCreateTagBtnShown={isCreateTagBtnShown}
-          tagInputValue={tagInputValue}
-        />
-      </div>
-    </form>
+      <TagSelector
+        isSavedTagListShown={isSavedTagListShown}
+        handleSavedTagListShown={handleSavedTagListShown}
+        tagInputValue={tagInputValue}
+        tagsFilteredList={tagsFilteredList}
+        savedTagList={savedTagList}
+        selectedTags={selectedTags}
+        setSelectedTags={setSelectedTags}
+        isCreateTagBtnShown={isCreateTagBtnShown}
+      />
+    </div>
   );
 }
 
