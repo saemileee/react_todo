@@ -26,7 +26,6 @@ body h1 {
 #open-create-todo-btn {
   position: fixed;
   top: 90%;
-  right: 140px;
   width: 42px;
   height: 42px;
   border: none;
@@ -36,7 +35,7 @@ body h1 {
   border-radius: 500%;
 }
 
-/* #open-create-todo-btn:active ~ #add-task {
+/* #open-create-todo-btn:active ~ #add-todo {
   bottom: 0px;
 } */
 
@@ -197,17 +196,22 @@ body h1 {
   border-radius: 3px;
   text-align: center;
   font-size: 12px;
-  color: #7f7f7f;
   background-color: rgb(255, 255, 255);
+  color: #7f7f7f;
 }
 
 /* add todo */
-#add-task {
+
+#create-todo-wrap {
   display: flex;
   flex-direction: column;
   position: fixed;
   bottom: 0px;
   width: 385px;
+}
+#add-todo {
+  position: relative;
+  z-index: 1;
   background-color: #313131;
   border-radius: 20px 20px 0 0;
   box-shadow: 0px -2px 15px #7f7f7f3c;
@@ -224,12 +228,12 @@ body h1 {
   }
 }
 
-#add-task header {
+#add-todo header {
   display: flex;
   margin-bottom: 8px;
 }
 
-#add-task header .view-more-btn {
+#add-todo header .view-more-btn {
   width: 28px;
   height: 28px;
   border: none;
@@ -237,12 +241,12 @@ body h1 {
   margin: 3px 10px 0 2px;
 }
 
-#add-task header h2 {
+#add-todo header h2 {
   width: 86%;
   color: #fff;
 }
 
-#add-task header .create-todo-close-btn {
+#add-todo header .create-todo-close-btn {
   float: right;
   border: none;
   background: none;
@@ -252,14 +256,14 @@ body h1 {
   font-weight: 200;
 }
 
-#add-task h3 {
+#add-todo h3 {
   display: none;
   color: #fff;
   font-size: 15px;
   font-weight: 300;
 }
 
-#add-task.full-page h3 {
+#add-todo.full-page h3 {
   display: block;
   color: #fff;
   font-size: 15px;
@@ -268,21 +272,21 @@ body h1 {
   transition-duration: 0.5s;
 }
 
-#add-task .todo-form {
+#add-todo .todo-form {
   padding: 16px;
   width: 358px;
 }
 
-#add-task .input-container {
+#add-todo .input-container {
   display: flex;
   justify-content: left;
 }
 
-#add-task .todo-form {
+#add-todo .todo-form {
   padding: 0;
 }
 
-#add-task input {
+#add-todo input {
   height: 36px;
   width: 100%;
   border-radius: 8px;
@@ -290,13 +294,13 @@ body h1 {
   background-color: #505050;
 }
 
-#add-task input[type="text" i] {
+#add-todo input[type="text" i] {
   padding: 2px 8px;
   color: #ffffff;
 }
 
 /* 할 일 풀페이지 */
-#add-task.full-page {
+#add-todo.full-page {
   height: 95%;
   animation: wide 0.2s ease-in-out 1 normal;
 }
@@ -310,17 +314,17 @@ body h1 {
   }
 }
 
-#add-task.full-page .input-container {
+#add-todo.full-page .input-container {
   margin-top: 32px;
   margin-bottom: 32px;
 }
 
-#add-task.full-page #tag-select-container {
+#add-todo.full-page #tag-select-container {
   display: block;
 }
 
 /* 태그 생성 콘테이너 */
-#add-task .selected-tags-container {
+#add-todo .selected-tags-container {
   padding-left: 0;
   position: relative;
   top: 0;
@@ -334,7 +338,7 @@ body h1 {
   display: none;
 }
 
-#add-task.full-page .saved-tags-list {
+#add-todo.full-page .saved-tags-list {
   width: 353px;
   padding: 8px 8px 8px 16px;
   position: fixed;
@@ -345,36 +349,36 @@ body h1 {
   overflow: hidden;
 }
 
-#add-task.full-page .saved-tags-list p {
+#add-todo.full-page .saved-tags-list p {
   font-size: 14px;
   color: #fff;
   margin-bottom: 8px;
 }
 
-#add-task.full-page .saved-tags-list p button {
+#add-todo.full-page .saved-tags-list p button {
   float: right;
   border: none;
   color: #fff;
   background: none;
 }
 
-#add-task.full-page .saved-tags-list ul {
+#add-todo.full-page .saved-tags-list ul {
   max-height: 260px;
   padding: 0;
   overflow-y: scroll;
 }
 
-#add-task.full-page .saved-tags-list li {
+#add-todo.full-page .saved-tags-list li {
   padding: 2px;
   margin-bottom: 6px;
 }
 
-#add-task.full-page .saved-tags-list li:hover {
+#add-todo.full-page .saved-tags-list li:hover {
   background-color: #858991;
   cursor: pointer;
 }
 
-#add-task.full-page .create-new-tag button {
+#add-todo.full-page .create-new-tag button {
   border: none;
   background: none;
   color: #fff;
@@ -389,12 +393,12 @@ body h1 {
   width: inherit;
 }
 
-.tag-search-result span:first-child {
+.tag-search-result:first-child {
   color: #fff;
 }
 
 /* 할 일 추가 버튼 */
-#add-task.full-page .add-task-btn {
+#add-todo.full-page .add-todo-btn {
   border: none;
   margin: 0 auto;
   margin-top: 24px;

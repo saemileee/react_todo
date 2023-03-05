@@ -3,7 +3,7 @@ function TodoAddBtn({ isCreateOptionsShown, addNewTodoHandler, value }) {
     <button
       style={{ display: !isCreateOptionsShown ? "none" : "block" }}
       onClick={addNewTodoHandler}
-      className="add-task-btn"
+      className="add-todo-btn"
     >
       {value}
     </button>

@@ -1,5 +1,5 @@
-import ViewMore from "./ViewMoreBtn.js";
-import CloseBtn from "./CloseBtn.js";
+import ViewMore from "../ViewMoreBtn.js";
+import CloseBtn from "../CloseBtn.js";
 
 function TodoCreateHeader({
   handleCreateOptionShown,
