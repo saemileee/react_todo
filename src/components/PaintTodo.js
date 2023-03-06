@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import OutsideClickHandler from "react-outside-click-handler";
 
 function PaintTodoList({
   tabMode,
@@ -10,6 +11,8 @@ function PaintTodoList({
   completedTodos,
   incompleteTodos,
 }) {
+  const editRef = useRef();
+
   const handleCompletion = (e) => {
     setTodosForRender(
       todosForRender.map((todoData) => {
@@ -32,10 +35,14 @@ function PaintTodoList({
 
   const handleDelete = (e) => {
     setTodosForRender(
-      todosForRender.filter((data) => e.target.parentElement.id != data.id)
+      todosForRender.filter(
+        (data) => e.target.parentElement.parentElement.id != data.id
+      )
     );
     setAllTodos(
-      allTodos.filter((data) => e.target.parentElement.id != data.id)
+      allTodos.filter(
+        (data) => e.target.parentElement.parentElement.id != data.id
+      )
     );
   };
 
@@ -52,6 +59,36 @@ function PaintTodoList({
   const dragOverItem = React.useRef(null);
 
   function PaintTodo({ todos }) {
+    const [editInputValue, setEditInputValue] = useState();
+
+    const handleEditMode = (e) => {
+      const editingID = _todos.map((todo) =>
+        todo.id == e.target.parentElement.parentElement.id
+          ? { ...todo, isEditing: true }
+          : todo
+      );
+      _setTodos(editingID);
+    };
+
+    const handleEditModeDone = (e) => {
+      const editingID = _todos.map((todo) =>
+        todo.id == e.target.parentElement.id
+          ? {
+              id: todo.id,
+              content: editInputValue,
+              isCompleted: todo.isCompleted,
+              tags: todo.tags,
+              isEditing: false,
+            }
+          : todo
+      );
+      setTodosForRender(editingID);
+    };
+
+    const updateInputValue = (e) => {
+      setEditInputValue(e.target.value);
+    };
+
     const [_todos, _setTodos] = useState([...todos]);
 
     //const handel drag sorting
@@ -73,41 +110,66 @@ function PaintTodoList({
       _setTodos(__todos);
     };
 
+    // const draggable = React.useRef("false");
+    const draggable = React.useRef("false");
+    const dropPointer = React.useRef("none");
+
     return (
       <ul id="task-list">
         {_todos.map((todo, index) => (
-          <li
-            className={todo.isCompleted ? "completed" : null}
-            key={index}
-            id={todo.id}
-            draggable
-            onDragStart={(e) => (dragItem.current = index)}
-            onDragEnter={(e) => (dragOverItem.current = index)}
-            onDragEnd={handleSort}
-            onDragOver={(e) => e.preventDefault()}
-          >
-            {" "}
-            <span className="ordering-btn">a</span>
-            <button className="complete-btn" onClick={handleCompletion}>
-              {!todo.isCompleted ? `🤔 미완료` : `😍 완료`}
-            </button>
-            <button className="del-task-btn" onClick={handleDelete}>
-              X
-            </button>
-            <p className="todo-content">{todo.content}</p>
-            <div className="todo-tags">
-              {todo.tags.map((tag) => (
-                <button
-                  key={tag.id}
-                  id={tag.id}
-                  onClick={handleTagClick}
-                  className="tag"
-                >
-                  {tag.value}{" "}
+          <div key={index} className={todo.isEditing ? "edit-mode" : null}>
+            <li
+              className={todo.isCompleted ? "completed" : null}
+              key={index}
+              id={todo.id}
+              draggable
+              // draggable={draggable.current}
+              onDragStart={() => (dragItem.current = index)}
+              onDragEnter={() => (dragOverItem.current = index)}
+              onDragEnd={handleSort}
+              onDragOver={(e) => e.preventDefault()}
+            >
+              <span className="ordering-btn">a</span>
+              <button className="complete-btn" onClick={handleCompletion}>
+                {!todo.isCompleted ? `🤔 미완료` : `😍 완료`}
+              </button>
+              <div className="todo-set-btns">
+                <button className="edit-mode-btn" onClick={handleEditMode}>
+                  ✏️
                 </button>
-              ))}
-            </div>
-          </li>
+                <button className="del-task-btn" onClick={handleDelete}>
+                  X
+                </button>
+              </div>
+              <button className="edit-done-btn" onClick={handleEditModeDone}>
+                수정완료
+              </button>
+              <p className="todo-content">
+                <input
+                  type="text"
+                  value={editInputValue}
+                  onInput={updateInputValue}
+                ></input>
+                <span>{todo.content}</span>
+              </p>
+              <div className="todo-tags">
+                {todo.tags.map((tag) => (
+                  <button
+                    key={tag.id}
+                    id={tag.id}
+                    onClick={handleTagClick}
+                    className="tag"
+                  >
+                    {tag.value}{" "}
+                  </button>
+                ))}
+              </div>
+            </li>
+            <div
+              className="drop_point"
+              style={{ display: dropPointer.current }}
+            ></div>
+          </div>
         ))}
       </ul>
     );
