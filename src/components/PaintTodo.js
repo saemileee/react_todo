@@ -73,7 +73,12 @@ function PaintTodoList({
   const dragOverItem = React.useRef(null);
 
   //페인트투두 함수
-  function PaintTodo({ todos, editInputValue, setEditInputValue }) {
+  function PaintTodo({
+    todos,
+    editInputValue,
+    setTodosForRender,
+    todosForRender,
+  }) {
     const [_todos, _setTodos] = useState([...todos]);
     const [_editInputValue, _setEditInputValue] = useState(editInputValue);
 
@@ -129,10 +134,10 @@ function PaintTodoList({
 
       //update the actual array
       _setTodos(__todos);
+      setTodosForRender(__todos);
+      setAllTodos(__todos);
     };
 
-    // const draggable = React.useRef("false");
-    const draggable = React.useRef("false");
     const dropPointer = React.useRef("none");
 
     return (
@@ -212,7 +217,8 @@ function PaintTodoList({
           : null
       }
       editInputValue={editInputValue}
-      setEditInputValue={setEditInputValue}
+      setTodosForRender={setTodosForRender}
+      todosForRender={todosForRender}
     />
   );
 }
