@@ -16,9 +16,9 @@ function CreateTodo({
   savedTagList,
   setSavedTagList,
 }) {
-  useEffect(() => {
-    window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
-  }, [savedTagList]);
+  // useEffect(() => {
+  //   window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
+  // }, [savedTagList]);
   const [inputValue, setInputValue] = useState();
   const [tagInputValue, setTagInputValue] = useState();
 
@@ -105,6 +105,7 @@ function CreateTodo({
         <div id="tag-select-container">
           <h3>Tags</h3>
           <SelectTagsPanel
+            handleSavedTagListShown={handleSavedTagListShown}
             savedTagList={savedTagList}
             setSavedTagList={setSavedTagList}
             tagInputValue={tagInputValue}

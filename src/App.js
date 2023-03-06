@@ -9,7 +9,7 @@ import Filter from "./components/Filter.js";
 
 function App() {
   //로딩
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   //태그 검색
   const [selectedTagForSearch, setSelectedTagForSearch] = useState(null);
@@ -40,7 +40,7 @@ function App() {
 
   useEffect(() => {
     getTodoDB();
-    setLoading(true);
+    // setLoading(true);
   }, []);
 
   useEffect(() => {
@@ -50,6 +50,10 @@ function App() {
     );
     window.localStorage.setItem("allTodos", JSON.stringify(allTodos));
   }, [todosForRender, allTodos]);
+
+  useEffect(() => {
+    window.localStorage.setItem("tagList", JSON.stringify(savedTagList));
+  }, [savedTagList]);
 
   const getTodoDB = () => {
     setTodosForRender(JSON.parse(localStorage.getItem("allTodos")));
