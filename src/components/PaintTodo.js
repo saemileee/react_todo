@@ -11,7 +11,21 @@ function PaintTodoList({
   completedTodos,
   incompleteTodos,
 }) {
-  const editRef = useRef();
+  //수정모드
+  const [editInputValue, setEditInputValue] = useState();
+
+  const handleEditMode = (e) => {
+    const editModeArr = todosForRender.map((todo) =>
+      todo.id == e.target.parentElement.parentElement.id
+        ? { ...todo, isEditing: true }
+        : todo
+    );
+    const editingInput = todosForRender.filter(
+      (todo) => todo.id == e.target.parentElement.parentElement.id
+    );
+    setTodosForRender(editModeArr);
+    setEditInputValue(editingInput[0].content);
+  };
 
   const handleCompletion = (e) => {
     setTodosForRender(
@@ -58,38 +72,45 @@ function PaintTodoList({
   const dragItem = React.useRef(null);
   const dragOverItem = React.useRef(null);
 
-  function PaintTodo({ todos }) {
-    const [editInputValue, setEditInputValue] = useState();
-
-    const handleEditMode = (e) => {
-      const editingID = _todos.map((todo) =>
-        todo.id == e.target.parentElement.parentElement.id
-          ? { ...todo, isEditing: true }
-          : todo
-      );
-      _setTodos(editingID);
-    };
+  //페인트투두 함수
+  function PaintTodo({ todos, editInputValue, setEditInputValue }) {
+    const [_todos, _setTodos] = useState([...todos]);
+    const [_editInputValue, _setEditInputValue] = useState(editInputValue);
 
     const handleEditModeDone = (e) => {
-      const editingID = _todos.map((todo) =>
-        todo.id == e.target.parentElement.id
+      let targetId = undefined;
+      if (e.target.localName == "button") {
+        targetId = e.target.parentElement.id;
+      } else if (e.target.localName == "input") {
+        targetId = e.target.parentElement.parentElement.id;
+      }
+
+      let editModeArr = todosForRender.map((todo) =>
+        todo.id == targetId
           ? {
               id: todo.id,
-              content: editInputValue,
+              content: _editInputValue,
               isCompleted: todo.isCompleted,
               tags: todo.tags,
               isEditing: false,
             }
           : todo
       );
-      setTodosForRender(editingID);
-    };
 
-    const updateInputValue = (e) => {
-      setEditInputValue(e.target.value);
+      let editModeArrForAll = allTodos.map((todo) =>
+        todo.id == targetId
+          ? {
+              id: todo.id,
+              content: _editInputValue,
+              isCompleted: todo.isCompleted,
+              tags: todo.tags,
+              isEditing: false,
+            }
+          : todo
+      );
+      setTodosForRender(editModeArr);
+      setAllTodos(editModeArrForAll);
     };
-
-    const [_todos, _setTodos] = useState([...todos]);
 
     //const handel drag sorting
     const handleSort = () => {
@@ -129,7 +150,7 @@ function PaintTodoList({
               onDragEnd={handleSort}
               onDragOver={(e) => e.preventDefault()}
             >
-              <span className="ordering-btn">a</span>
+              <span className="ordering-btn">🖱</span>
               <button className="complete-btn" onClick={handleCompletion}>
                 {!todo.isCompleted ? `🤔 미완료` : `😍 완료`}
               </button>
@@ -141,14 +162,18 @@ function PaintTodoList({
                   X
                 </button>
               </div>
+
               <button className="edit-done-btn" onClick={handleEditModeDone}>
-                수정완료
+                수정
               </button>
               <p className="todo-content">
                 <input
                   type="text"
-                  value={editInputValue}
-                  onInput={updateInputValue}
+                  value={_editInputValue}
+                  onInput={(e) => _setEditInputValue(e.target.value)}
+                  onKeyDown={(e) =>
+                    e.code === "Enter" ? handleEditModeDone(e) : null
+                  }
                 ></input>
                 <span>{todo.content}</span>
               </p>
@@ -186,6 +211,8 @@ function PaintTodoList({
           ? incompleteTodos
           : null
       }
+      editInputValue={editInputValue}
+      setEditInputValue={setEditInputValue}
     />
   );
 }
