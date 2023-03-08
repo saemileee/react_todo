@@ -8,9 +8,14 @@ function TagSelector({
   tagInputValue,
   tagsFilteredList,
   savedTagList,
+  setSavedTagList,
   selectedTags,
   setSelectedTags,
   isCreateTagBtnShown,
+  allTodos,
+  setAllTodos,
+  todosForRender,
+  setTodosForRender,
 }) {
   return (
     <div
@@ -26,6 +31,12 @@ function TagSelector({
         tagList={{ tagInputValue }.length > 0 ? tagsFilteredList : savedTagList}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
+        savedTagList={savedTagList}
+        setSavedTagList={setSavedTagList}
+        allTodos={allTodos}
+        setAllTodos={setAllTodos}
+        todosForRender={todosForRender}
+        setTodosForRender={setTodosForRender}
       />
       <CreateTagPanel
         isCreateTagBtnShown={isCreateTagBtnShown}

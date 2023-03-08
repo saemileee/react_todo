@@ -9,6 +9,10 @@ function RenderSelectTagsPanel({
   handleSavedTagListShown,
   savedTagList,
   setSavedTagList,
+  allTodos,
+  setAllTodos,
+  todosForRender,
+  setTodosForRender,
 }) {
   const [tagInputValue, setTagInputValue] = useState();
 
@@ -38,9 +42,14 @@ function RenderSelectTagsPanel({
         tagInputValue={tagInputValue}
         tagsFilteredList={tagsFilteredList}
         savedTagList={savedTagList}
+        setSavedTagList={setSavedTagList}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
         isCreateTagBtnShown={isCreateTagBtnShown}
+        allTodos={allTodos}
+        setAllTodos={setAllTodos}
+        todosForRender={todosForRender}
+        setTodosForRender={setTodosForRender}
       />
     </div>
   );
