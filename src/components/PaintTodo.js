@@ -10,6 +10,7 @@ function PaintTodoList({
   setSelectedTagForSearch,
   completedTodos,
   incompleteTodos,
+  selectedTagForSearch,
 }) {
   //수정모드
   const [editInputValue, setEditInputValue] = useState();
@@ -18,7 +19,7 @@ function PaintTodoList({
     const editModeArr = todosForRender.map((todo) =>
       todo.id == e.target.parentElement.parentElement.id
         ? { ...todo, isEditing: true }
-        : todo
+        : { ...todo, isEditing: false }
     );
     const editingInput = todosForRender.filter(
       (todo) => todo.id == e.target.parentElement.parentElement.id
@@ -78,6 +79,7 @@ function PaintTodoList({
     editInputValue,
     setTodosForRender,
     todosForRender,
+    selectedTagForSearch,
   }) {
     const [_todos, _setTodos] = useState([...todos]);
     const [_editInputValue, _setEditInputValue] = useState(editInputValue);
@@ -148,14 +150,26 @@ function PaintTodoList({
               className={todo.isCompleted ? "completed" : null}
               key={index}
               id={todo.id}
-              draggable
+              draggable={
+                tabMode === "all" && selectedTagForSearch == null ? true : false
+              }
               // draggable={draggable.current}
               onDragStart={() => (dragItem.current = index)}
               onDragEnter={() => (dragOverItem.current = index)}
               onDragEnd={handleSort}
               onDragOver={(e) => e.preventDefault()}
             >
-              <span className="ordering-btn">🖱</span>
+              <span
+                className="ordering-btn"
+                style={{
+                  display:
+                    tabMode === "all" && selectedTagForSearch == null
+                      ? "inline-block"
+                      : "none",
+                }}
+              >
+                🖱
+              </span>
               <button className="complete-btn" onClick={handleCompletion}>
                 {!todo.isCompleted ? `🤔 미완료` : `😍 완료`}
               </button>
@@ -219,6 +233,7 @@ function PaintTodoList({
       editInputValue={editInputValue}
       setTodosForRender={setTodosForRender}
       todosForRender={todosForRender}
+      selectedTagForSearch={selectedTagForSearch}
     />
   );
 }

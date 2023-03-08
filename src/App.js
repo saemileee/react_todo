@@ -91,6 +91,7 @@ function App() {
           setSelectedTagForSearch={setSelectedTagForSearch}
           completedTodos={completedTodos}
           incompleteTodos={incompleteTodos}
+          selectedTagForSearch={selectedTagForSearch}
         />
       </div>
       <CreateTodo
