@@ -1,8 +1,7 @@
 import { useState } from "react";
 import SelectedTagsList from "./SelectedTagsList.js";
-import { RenderTagInput } from "./TagInput.js";
+import TagInput from "./TagInput.js";
 import TagSelector from "./TagSelector.js";
-
 function RenderSelectTagsPanel({
   selectedTags,
   setSelectedTags,
@@ -10,10 +9,6 @@ function RenderSelectTagsPanel({
   handleSavedTagListShown,
   savedTagList,
   setSavedTagList,
-  allTodos,
-  setAllTodos,
-  todosForRender,
-  setTodosForRender,
 }) {
   const [tagInputValue, setTagInputValue] = useState();
 
@@ -26,7 +21,7 @@ function RenderSelectTagsPanel({
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
       />
-      <RenderTagInput
+      <TagInput
         handleSavedTagListShown={handleSavedTagListShown}
         savedTagList={savedTagList}
         tagInputValue={tagInputValue}
@@ -43,14 +38,9 @@ function RenderSelectTagsPanel({
         tagInputValue={tagInputValue}
         tagsFilteredList={tagsFilteredList}
         savedTagList={savedTagList}
-        setSavedTagList={setSavedTagList}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
         isCreateTagBtnShown={isCreateTagBtnShown}
-        allTodos={allTodos}
-        setAllTodos={setAllTodos}
-        todosForRender={todosForRender}
-        setTodosForRender={setTodosForRender}
       />
     </div>
   );

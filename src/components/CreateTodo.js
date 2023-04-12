@@ -112,10 +112,6 @@ function CreateTodo({
             selectedTags={selectedTags}
             setSelectedTags={setSelectedTags}
             isSavedTagListShown={isSavedTagListShown}
-            allTodos={allTodos}
-            setAllTodos={setAllTodos}
-            todosForRender={todosForRender}
-            setTodosForRender={setTodosForRender}
           />
         </div>
         <TodoAddBtn
